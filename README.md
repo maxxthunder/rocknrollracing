@@ -2,7 +2,7 @@
 
 # Rock N' Roll Racing — Password Generator & Secrets
 
-**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.4.1](https://img.shields.io/badge/version-1.4.1-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
+**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.4.2](https://img.shields.io/badge/version-1.4.2-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
 
 ![The five cars from the SNES car shop, spinning](img/readme/cars.gif)
 
@@ -99,13 +99,13 @@ To make other glitch passwords, turn on Glitch mode in the generator. It unlocks
 
 Two US Super Nintendo prototypes, both with a blank cartridge header.
 
-![Beta 1: the "Rock & Roll Racing" title, Rookie / Advanced / Expert, the Commando in the car shop, a shop message, and the Commando racing on Chem VI](img/readme/beta1.png)
+![Beta 1: the "Rock & Roll Racing" title, Rookie / Advanced / Expert, the Dirt Devil sold as "Commando" in the car shop, a shop message, and the same car racing on Chem VI](img/readme/beta1.png)
 
-<img src="img/readme/beta1_commando.gif" align="right" width="148" alt="The cut Commando spinning in the Beta 1 car shop">
+<img src="img/readme/beta1_commando.gif" align="right" width="148" alt="The Dirt Devil, named Commando in Beta 1, spinning in the car shop">
 
 **Beta 1** is an early build. Seen in the emulator:
 
-- **The Commando, a sixth car.** It's a lifted jeep with a bull bar, sold for $18,000 in the first car shop between the Dirt Devil and the Marauder. It has its own spinning shop art and drives normally in a race. The final game drops it and its name; its cars are Battle Trak, Havac, Dirt Devil, Marauder and Air Blade.
+- **The Dirt Devil was called the Commando.** The car art is the same five cars as the final game, but the name list has six: Battle Trak, Havac, **Commando**, Dirt Devil, Marauder, Air Blade. So from the third car on, every name is one off: the shop sells the Dirt Devil's jeep as COMMANDO, the Marauder as DIRT DEVIL and the Air Blade as MARAUDER (for $35,000, not the final $70,000),, so AIR BLADE would never show up. The final game drops Commando and moves each name back onto its car.
 - **"Rock & Roll Racing"** on the title screen, not "Rock N' Roll".
 - **Rookie, Advanced and Expert** instead of Rookie, Veteran and Warrior.
 - **Shop messages** in the info panel, such as YOU MUST BUY A CAR! when you try to leave without one.
