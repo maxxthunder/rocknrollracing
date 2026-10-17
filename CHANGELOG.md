@@ -2,6 +2,12 @@
 
 Changes to the [password generator](https://maxxthunder.github.io/rocknrollracing/). The version is shown at the bottom of the page.
 
+## 1.3.0 (2026-10-17)
+- Glitch colors 5–7 show on the spinning cars as the two-tone paints the game really draws: teal and purple, orange and green, green and dark green.
+- New codes now wear a "★ New" tab on their card.
+- README rewritten: car gallery, code tables for every console, what each glitch value does, and where else the ROMs were searched for secrets.
+- MIT license.
+
 ## 1.2.0 (2026-10-17)
 - Planet pictures on the planet picker, which now matches the character picker.
 - Spinning cars on the vehicle picker, ripped from the SNES car shop in all five paints; the picker lists cars cheapest first and the Color names are spelled out.

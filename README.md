@@ -2,7 +2,7 @@
 
 # Rock N' Roll Racing — Password Generator & Secrets
 
-**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.2.0](https://img.shields.io/badge/version-1.2.0-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
+**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.3.0](https://img.shields.io/badge/version-1.3.0-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
 
 ![The five cars from the SNES car shop, spinning](img/readme/cars.gif)
 
