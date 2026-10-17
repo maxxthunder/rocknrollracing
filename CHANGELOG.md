@@ -2,6 +2,9 @@
 
 Changes to the [password generator](https://maxxthunder.github.io/rocknrollracing/). The version is shown at the bottom of the page.
 
+## 1.3.1 (2026-10-17)
+- The Difficulty, Division, Color and upgrade options now split their row evenly instead of bunching up on the left.
+
 ## 1.3.0 (2026-10-17)
 - Glitch colors 5–7 show on the spinning cars as the two-tone paints the game really draws: teal and purple, orange and green, green and dark green.
 - New codes now wear a "★ New" tab on their card.

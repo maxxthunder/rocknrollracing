@@ -2,7 +2,7 @@
 
 # Rock N' Roll Racing — Password Generator & Secrets
 
-**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.3.0](https://img.shields.io/badge/version-1.3.0-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
+**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.3.1](https://img.shields.io/badge/version-1.3.1-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
 
 ![The five cars from the SNES car shop, spinning](img/readme/cars.gif)
 
@@ -190,8 +190,6 @@ The total is still 60 bits and 12 characters, with the same XOR key. After a new
 | `index.html` | The generator page |
 | `rnrr.js` | Password encode/decode, ported from the ROM |
 | `test.mjs` | `node test.mjs` round-trips published passwords through the codec |
-| `tools/dis65.py`, `tools/dism68k.py` | Small 65816 / 68000 disassemblers used for this research |
-| `tools/padrefs.py` | Lists every SNES read of the joypad variables |
 | `tools/disasm.py`, `tools/disasm68k.py`, `tools/reasm*.py` | Full-ROM disassemblers and reassemblers (from the Soldiers of Fortune project) |
 | `disasm/snes/`, `disasm/genesis/` | US ROM listings that reassemble byte-identical; `disasm/names.txt` labels the password, input and cheat routines and RAM |
 | `img/characters.png`, `img/rock_n_roll_racing_logo.png` | Page art: racer portraits (8 × 2 tiles of 64 px) and the logo |
