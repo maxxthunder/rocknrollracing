@@ -70,7 +70,7 @@ h2 { font: 800 1.15rem var(--display); margin: 0; letter-spacing: .03em; }
 .lbl { display: inline-flex; align-items: center; gap: 8px; }
 .up { border-radius: 3px; image-rendering: pixelated; }
 .pic.planet { background: none; }
-/* cars: cars/<name>.png holds 24 spin frames (64px) across and the 5 paint colors down; shown at 48px, row follows the Color field */
+/* cars: img/cars/<name>.png holds 24 spin frames (64px) across and the 5 paint colors down; shown at 48px, row follows the Color field */
 .pic.car { width: 48px; height: 48px; background: var(--sheet) 0 calc(var(--paint, 2) * -48px) / 1152px 240px; animation: spin 1.6s steps(24) infinite; }
 @keyframes spin { to { background-position-x: -1152px; } }
 @media (prefers-reduced-motion: reduce) { .pic.car { animation: none; } }
@@ -91,8 +91,8 @@ input[type=range] { width: 100%; accent-color: var(--brass); }
 .chars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
 .cast { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; padding: 0; list-style: none; }
 .cast li { display: flex; align-items: center; gap: 8px; color: var(--ink); }
-/* portraits come from characters.png: 8 × 2 tiles of 64px, shown at 40px */
-.pic { width: 40px; height: 40px; flex: none; border-radius: 6px; background: url(characters.png) calc(var(--i) * -40px) calc(var(--r, 0) * -40px) / 320px 80px; }
+/* portraits come from img/characters.png: 8 × 2 tiles of 64px, shown at 40px */
+.pic { width: 40px; height: 40px; flex: none; border-radius: 6px; background: url(img/characters.png) calc(var(--i) * -40px) calc(var(--r, 0) * -40px) / 320px 80px; }
 .pic.none { background: var(--panel); display: grid; place-content: center; font: 700 1.2rem var(--mono); color: var(--muted); }
 .pic.none::before { content: "?"; }
 .char { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); cursor: pointer; font-size: .9rem; }
@@ -151,7 +151,7 @@ body:has(#big[open]) { overflow: hidden; }
 <body>
 <div class="wrap">
   <header>
-    <h1><img class="logo" src="rock_n_roll_racing_logo.png" width="500" height="267" alt="Rock N' Roll Racing">Password Generator</h1>
+    <h1><img class="logo" src="img/rock_n_roll_racing_logo.png" width="500" height="267" alt="Rock N' Roll Racing">Password Generator</h1>
     <p class="sub">Build a password for any racer, car and planet, or paste one to see what it holds. Works on Super Nintendo and Genesis.</p>
   </header>
 
@@ -211,13 +211,13 @@ body:has(#big[open]) { overflow: hidden; }
       <h2>Car</h2>
       <div class="field"><span>Vehicle</span><div class="chars" data-name="car"></div></div>
       <div class="field"><span>Color</span><div class="seg" data-name="color"></div></div>
-      <div class="field"><span><span class="lbl"><img class="up" src="upgrades/engine.png" width="30" height="24" alt="">Engine</span></span><div class="seg" data-name="engine"></div></div>
-      <div class="field"><span><span class="lbl"><img class="up" src="upgrades/tires.png" width="30" height="24" alt="">Tires</span></span><div class="seg" data-name="tires"></div></div>
-      <div class="field"><span><span class="lbl"><img class="up" src="upgrades/shocks.png" width="30" height="24" alt="">Shocks</span></span><div class="seg" data-name="shocks"></div></div>
-      <div class="field"><span><span class="lbl"><img class="up" src="upgrades/armor.png" width="30" height="24" alt="">Armor</span></span><div class="seg" data-name="armor"></div></div>
-      <div class="field"><label for="front"><span class="lbl"><img class="up" src="upgrades/front.png" width="30" height="24" alt="">Front weapon charges</span><output id="front_out"></output></label><input type="range" name="front" id="front" min="0" max="7"></div>
-      <div class="field"><label for="middle"><span class="lbl"><img class="up" src="upgrades/middle.png" width="30" height="24" alt="">Nitro / jump jet charges</span><output id="middle_out"></output></label><input type="range" name="middle" id="middle" min="0" max="7"></div>
-      <div class="field"><label for="rear"><span class="lbl"><img class="up" src="upgrades/rear.png" width="30" height="24" alt="">Rear weapon charges</span><output id="rear_out"></output></label><input type="range" name="rear" id="rear" min="0" max="7"></div>
+      <div class="field"><span><span class="lbl"><img class="up" src="img/upgrades/engine.png" width="30" height="24" alt="">Engine</span></span><div class="seg" data-name="engine"></div></div>
+      <div class="field"><span><span class="lbl"><img class="up" src="img/upgrades/tires.png" width="30" height="24" alt="">Tires</span></span><div class="seg" data-name="tires"></div></div>
+      <div class="field"><span><span class="lbl"><img class="up" src="img/upgrades/shocks.png" width="30" height="24" alt="">Shocks</span></span><div class="seg" data-name="shocks"></div></div>
+      <div class="field"><span><span class="lbl"><img class="up" src="img/upgrades/armor.png" width="30" height="24" alt="">Armor</span></span><div class="seg" data-name="armor"></div></div>
+      <div class="field"><label for="front"><span class="lbl"><img class="up" src="img/upgrades/front.png" width="30" height="24" alt="">Front weapon charges</span><output id="front_out"></output></label><input type="range" name="front" id="front" min="0" max="7"></div>
+      <div class="field"><label for="middle"><span class="lbl"><img class="up" src="img/upgrades/middle.png" width="30" height="24" alt="">Nitro / jump jet charges</span><output id="middle_out"></output></label><input type="range" name="middle" id="middle" min="0" max="7"></div>
+      <div class="field"><label for="rear"><span class="lbl"><img class="up" src="img/upgrades/rear.png" width="30" height="24" alt="">Rear weapon charges</span><output id="rear_out"></output></label><input type="range" name="rear" id="rear" min="0" max="7"></div>
     </div>
   </form>
 
@@ -316,8 +316,8 @@ for (const box of form.querySelectorAll('[data-name]')) {
     const l = document.createElement('label');
     l.className = (box.classList.contains('chars') ? 'char' : '') + (i >= normal ? ' glitch-opt' : '');
     // portraits 0-6 are the playable racers; the unused super racer and glitch planets 6-7 get a "?"
-    const pic = name === 'car' ? (CAR_IMG[i] ? `<i class="pic car" style="--sheet:url(cars/${CAR_IMG[i]}.png)"></i>` : '<i class="pic none"></i>')
-      : name === 'planet' ? (PLANET_IMG[i] ? `<img class="pic planet" src="planets/${PLANET_IMG[i]}.png" width="40" height="40" alt="">` : '<i class="pic none"></i>')
+    const pic = name === 'car' ? (CAR_IMG[i] ? `<i class="pic car" style="--sheet:url(img/cars/${CAR_IMG[i]}.png)"></i>` : '<i class="pic none"></i>')
+      : name === 'planet' ? (PLANET_IMG[i] ? `<img class="pic planet" src="img/planets/${PLANET_IMG[i]}.png" width="40" height="40" alt="">` : '<i class="pic none"></i>')
       : name !== 'character' ? '' : i < 7 ? `<i class="pic" style="--i:${i}"></i>` : '<i class="pic none"></i>';
     l.innerHTML = `<input type="radio" name="${name}" value="${i}">${pic}<span>${t}</span>`;
     box.append(l);

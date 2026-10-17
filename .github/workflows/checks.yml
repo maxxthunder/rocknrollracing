@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Collect the page files
-        run: mkdir site && cp -r index.html rnrr.js characters.png rock_n_roll_racing_logo.png planets upgrades cars site/
+        run: mkdir site && cp -r index.html rnrr.js img site/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
