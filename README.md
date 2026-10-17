@@ -2,7 +2,7 @@
 
 # Rock N' Roll Racing — Password Generator & Secrets
 
-**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.4.0](https://img.shields.io/badge/version-1.4.0-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
+**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.4.1](https://img.shields.io/badge/version-1.4.1-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
 
 ![The five cars from the SNES car shop, spinning](img/readme/cars.gif)
 
@@ -219,7 +219,7 @@ The total is still 60 bits and 12 characters, with the same XOR key. After a new
 | `test.mjs` | `node test.mjs` round-trips published passwords through the codec |
 | `tools/disasm.py`, `tools/disasm68k.py`, `tools/reasm*.py` | Full-ROM disassemblers and reassemblers (from the Soldiers of Fortune project) |
 | `disasm/snes/`, `disasm/genesis/` | US ROM listings that reassemble byte-identical; `disasm/names.txt` labels the password, input and cheat routines and RAM |
-| `img/characters.png`, `img/rock_n_roll_racing_logo.png` | Page art: racer portraits (8 × 2 tiles of 64 px) and the logo |
+| `img/characters.png`, `img/rock_n_roll_racing_logo.png`, `img/favicon.png` | Page art: racer portraits (8 × 2 tiles of 64 px), the logo, and the Snake Sanders tab icon |
 | `img/planets/` | The six planets, captured from the SNES VS mode planet select (99 px, transparent) |
 | `img/upgrades/` | Engine, tires, shocks, armor and weapon icons, captured from the SNES Buy Equipment screen (the Marauder's items) |
 | `img/cars/` | Spinning car sheets from the SNES car shop: 24 frames of 64 px across (one full turn, 4 game frames each) and the 8 paints down (5–7 the glitch paints, built from the ROM palette), rebuilt from VRAM, OAM and CGRAM with real transparency |
