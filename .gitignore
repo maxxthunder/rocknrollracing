@@ -1,0 +1,8 @@
+*.sfc
+*.smc
+*.gba
+*.md
+!README.md
+!CHANGELOG.md
+__pycache__/
+.claude/

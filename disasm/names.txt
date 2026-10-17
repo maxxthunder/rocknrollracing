@@ -1,0 +1,78 @@
+# Names used in the listings. One per line: platform  kind  address  name  [bank]
+#   kind code: a routine or data label; it replaces L_xxxxxx in the listing and reassembles to that address
+#   kind ram:  a variable; it is shown at the end of the comment on every line that uses it
+# SNES RAM below $10000 is the low page ($7E0000 mirror). Genesis RAM is written as the full address.
+# Names are lowercase.
+
+# ---- SNES: controllers
+snes code $80DC7D read_pads
+snes ram  $033D   pad1_held
+snes ram  $033F   pad2_held
+snes ram  $034D   pad1_pressed
+snes ram  $034F   pad2_pressed
+snes code $819EDB split_menu_buttons       # new presses -> per-button counters $0289-$0295
+snes code $819BFC match_button_code        # A = code table; sets code_entered when the table's $FFFF is reached
+snes ram  $0243   code_step
+snes ram  $0245   code_entered
+snes code $819BE6 code_table_buy_equipment
+snes code $81B659 code_table_pre_race
+snes code $81B9FF code_table_options
+snes code $81CF44 code_table_advance
+
+# ---- SNES: cheat effects
+snes ram  $0247   infinite_ammo
+snes ram  $0B4B   falling_enabled          # 1 normally; the options code clears it
+snes code $81B0D0 add_code_money
+
+# ---- SNES: passwords
+snes code $81C2A5 password_alphabet
+snes code $81BDE9 decode_password
+snes code $81BE81 encode_password_p1
+snes code $81BF5D pack_password
+snes code $81C024 xor_password_key
+snes code $81C1AE unpack_password
+snes code $81C236 emit_password_chars
+snes code $81C256 password_checksum
+snes code $81C266 push_bits
+snes code $81C277 pull_bits
+snes ram  $13C4   password_bits
+snes ram  $13DC   password_text_p1
+snes ram  $13E8   password_text_p2
+
+# ---- SNES: game state
+snes ram  $0299   planet
+snes ram  $029A   division
+snes ram  $029C   character
+snes ram  $02A0   car
+snes ram  $02A2   car_color
+snes ram  $02A8   p1_points
+snes ram  $02AB   points_needed
+snes ram  $0336   difficulty
+snes ram  $0355   screen_id
+snes code $81C869 end_of_season
+
+# ---- Genesis: controllers
+genesis code $000CF6 read_pad
+genesis ram  $FFC282 pad1_held
+genesis ram  $FFC284 pad2_held
+genesis ram  $FFC28C pad1_pressed
+genesis ram  $FFC28E pad2_pressed
+genesis code $001C90 match_button_code
+genesis ram  $FFBA1E code_step
+genesis ram  $FFBA20 code_entered
+genesis ram  $FFBA22 infinite_ammo
+genesis ram  $FFCE2E falling_enabled
+genesis code $003340 code_table_pre_race
+genesis code $007358 code_table_character_select
+genesis code $0079B2 code_table_options
+genesis code $008432 code_table_buy_equipment
+genesis code $013BEE code_table_advance
+
+# ---- Genesis: passwords
+genesis code $0093D8 password_alphabet
+genesis code $008DF6 decode_password
+genesis code $009004 pack_password
+genesis code $00934E emit_password_chars
+genesis code $009372 password_checksum
+genesis code $00938E push_bits
+genesis code $0093AA pull_bits

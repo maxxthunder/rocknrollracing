@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23120c0d'/%3E%3Cpath d='M6 26V6h6v6h6v6h6v8z' fill='%23e8432c'/%3E%3Cpath d='M12 6h6v6h-6zM18 12h6v6h-6z' fill='%23ffcf3f'/%3E%3C/svg%3E">
+<title>Rock N' Roll Racing Password Generator: Super Nintendo (SNES) and Genesis</title>
+<meta name="description" content="Make or decode passwords for any racer, planet, division, car, upgrades, weapons and money in Rock N' Roll Racing on Super Nintendo (SNES) and Genesis / Mega Drive.">
+<link rel="canonical" href="https://maxxthunder.github.io/rocknrollracing/">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "WebApplication", "name": "Rock N' Roll Racing Password Generator",
+ "url": "https://maxxthunder.github.io/rocknrollracing/", "description": "Make or decode passwords for any racer, planet, division, car, upgrades, weapons and money in Rock N' Roll Racing on Super Nintendo (SNES) and Genesis / Mega Drive.", "applicationCategory": "GameApplication", "operatingSystem": "Any (web browser)",
+ "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+ "about": {"@type": "VideoGame", "name": "Rock N' Roll Racing",
+   "gamePlatform": ["Super Nintendo Entertainment System", "Sega Genesis", "Sega Mega Drive"],
+   "author": {"@type": "Organization", "name": "Silicon & Synapse"}}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@800&family=Alegreya+Sans:wght@400;500;700&family=Space+Mono:wght@700&display=swap">
+<style>
+/* Layout: one column; the password plate is up top, then the racer and car cards (they stack on a phone) */
+:root {
+  /* "Rock red": always dark, near-black with red controls and a flame-yellow password plate */
+  --bg: #170f10; --panel: #241718; --ink: #eee4da; --muted: #a8979a; --line: #3e2a2c;
+  --brass: #e8432c; --brass-soft: #3d1a16; --plate: #0b0707; --plate-ink: #ffcf3f; --bad: #ff8a72;
+  --display: "Alegreya", Georgia, serif; --body: "Alegreya Sans", system-ui, sans-serif;
+  --mono: "Space Mono", ui-monospace, Consolas, monospace; color-scheme: dark;
+}
+[hidden] { display: none !important; }  /* .seg sets display, which would otherwise override hidden */
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body); margin: 0; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 24px; display: grid; gap: 24px; }
+h1 { font: 800 clamp(1.7rem, 5vw, 2.4rem)/1.1 var(--display); margin: 0; letter-spacing: .02em; text-wrap: balance; text-align: center; }
+h1 .logo { display: block; width: min(100%, 360px); height: auto; margin: 0 auto 6px; }
+.sub { color: var(--muted); margin: 6px 0 0; max-width: 62ch; }
+header { text-align: center; }
+header .sub { margin-inline: auto; }
+.plate { background: var(--plate); color: var(--plate-ink); border-radius: 6px; padding: 20px; display: grid; gap: 14px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--plate-ink) 25%, transparent); container-type: inline-size; }
+.plate-label { font: 500 .75rem var(--body); letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+/* the password fills the plate's width: font size follows the plate (container units), groups spread edge to edge */
+.code { font: 700 10.6cqi/1 var(--mono); letter-spacing: .12em; display: flex; justify-content: space-between; gap: .4em; }
+.code span { margin-right: -.12em; }
+.summary { font-size: .95rem; opacity: .9; }
+.plate-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button { font: 500 .95rem var(--body); border-radius: 4px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+button:hover { border-color: var(--brass); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+.plate button { background: var(--brass); color: var(--plate); border-color: transparent; font-weight: 700; }
+.plate .ghost { background: transparent; color: var(--plate-ink); border-color: color-mix(in srgb, var(--plate-ink) 40%, transparent); font-weight: 500; }
+#copy { min-width: 6.5em; }  /* room for "Copied ✓" without shifting the other buttons */
+.status { font-size: .9rem; opacity: .85; }
+section { display: grid; gap: 12px; }
+h2 { font: 800 1.15rem var(--display); margin: 0; letter-spacing: .03em; }
+.row { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.seg label { padding: 6px 12px; cursor: pointer; background: var(--panel); border-left: 1px solid var(--line); white-space: nowrap; }
+@media (max-width: 420px) { .seg label { padding: 6px 8px; font-size: min(1rem, 4.3vw); } }
+.seg label:first-child { border-left: 0; }
+.seg input, .char input { position: absolute; opacity: 0; pointer-events: none; }
+.seg input:checked + span { color: var(--brass); font-weight: 700; }
+.seg label:has(input:checked) { background: var(--brass-soft); }
+.seg label:has(input:focus-visible) { outline: 2px solid var(--brass); outline-offset: -2px; }
+.glitch-opt span::after { content: " ⚠"; color: var(--plate-ink); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 14px; min-width: 0; align-content: start; }
+.field { display: grid; gap: 4px; }
+.field > span, .field > label { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.field output { font: 700 .9rem var(--mono); color: var(--ink); letter-spacing: 0; text-transform: none; }
+input[type=number], input[type=text] { font: 1rem var(--body); padding: 7px 9px; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%; box-sizing: border-box; }
+input[type=range] { width: 100%; accent-color: var(--brass); }
+.money { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+.digits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.chars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+.cast { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; padding: 0; list-style: none; }
+.cast li { display: flex; align-items: center; gap: 8px; color: var(--ink); }
+/* portraits come from characters.png: 8 × 2 tiles of 64px, shown at 40px */
+.pic { width: 40px; height: 40px; flex: none; border-radius: 6px; background: url(characters.png) calc(var(--i) * -40px) calc(var(--r, 0) * -40px) / 320px 80px; }
+.pic.none { background: var(--panel); display: grid; place-content: center; font: 700 1.2rem var(--mono); color: var(--muted); }
+.pic.none::before { content: "?"; }
+.char { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); cursor: pointer; font-size: .9rem; }
+.char:has(input:checked) { border-color: var(--brass); background: var(--brass-soft); color: var(--brass); font-weight: 700; }
+.char:has(input:focus-visible) { outline: 2px solid var(--brass); outline-offset: 2px; }
+.toggle { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
+.toggle input { accent-color: var(--brass); width: 1.1em; height: 1.1em; }
+.hint { font-size: .85rem; color: var(--muted); margin: 0; }
+.err { color: var(--bad); font-size: .9rem; margin: 0; }
+.ok { color: var(--plate-ink); font-size: .9rem; margin: 0; }
+#perr:empty { display: none; }
+.decode { display: grid; gap: 8px; }
+.decode .err button { margin: 4px 6px 0 0; font: 700 .85rem var(--mono); letter-spacing: .08em; }
+.mono { font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+p .mono, td .mono { word-break: break-all; }
+details { color: var(--muted); font-size: .92rem; }
+summary { cursor: pointer; color: var(--ink); }
+table { border-collapse: collapse; font-size: .88rem; }
+td, th { border-bottom: 1px solid var(--line); padding: 4px 10px 4px 0; text-align: left; vertical-align: top; }
+td .mono { text-transform: none; }
+.tw { overflow-x: auto; }
+footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: .9rem; color: var(--muted); }
+footer a { color: var(--brass); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+/* big-text view for reading the password while typing it into the game */
+#big { inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border: 0; padding: 24px 16px; box-sizing: border-box;
+  background: var(--plate); color: var(--plate-ink); }
+#big[open] { display: grid; place-content: center; justify-items: center; gap: 24px; text-align: center; }
+#big .summary { font-size: 1.1rem; text-wrap: balance; }
+body:has(#big[open]) { overflow: hidden; }
+.big-code { display: flex; justify-content: center; gap: .5em; font: 700 min(7.9vw, 22vh)/1.1 var(--mono); letter-spacing: .12em; }
+.big-code span { padding-left: .12em; }
+@media (max-width: 700px) { .big-code { flex-direction: column; gap: .15em; font-size: min(26.3vw, 17vh); } }
+#big_close { background: var(--brass); color: var(--plate); border-color: transparent; font-weight: 700; font-size: 1.1rem; padding: 10px 28px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><img class="logo" src="rock_n_roll_racing_logo.png" width="500" height="267" alt="Rock N' Roll Racing">Password Generator</h1>
+    <p class="sub">Build a password for any racer, car and planet, or paste one to see what it holds. Works on Super Nintendo and Genesis.</p>
+  </header>
+
+  <div class="plate">
+    <div class="plate-label">Password</div>
+    <div class="code" id="code"></div>
+    <div class="summary" id="summary"></div>
+    <div class="plate-row">
+      <button id="big_open" type="button">Big text</button>
+      <button id="copy" class="ghost" type="button">Copy</button>
+      <button id="max" class="ghost" type="button">Max everything</button>
+      <button id="reset" class="ghost" type="button">New game</button>
+      <span class="status" id="status" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="decode">
+    <div class="row">
+      <input type="text" id="paste" class="mono" maxlength="20" placeholder="12 characters" autocomplete="off" spellcheck="false" style="max-width:20ch" aria-label="Password to decode">
+      <button id="load" type="button">Decode</button>
+      <span class="hint">Have a password? Paste it to load its settings.</span>
+    </div>
+    <div class="err" id="perr" aria-live="polite"></div>
+  </div>
+
+  <dialog id="big" aria-label="Password in large text">
+    <p class="summary" id="big_sum"></p>
+    <div class="big-code" id="big_code"></div>
+    <button id="big_close" type="button" autofocus>Done</button>
+  </dialog>
+
+  <section>
+    <div class="row">
+      <label class="toggle"><input type="checkbox" id="glitch"> Glitch mode</label>
+      <span class="hint">Unlocks values the game never makes itself (marked ⚠): money digits 10–15, colors 5–7, planets 6–7, cars 5–7, difficulty 3.</span>
+    </div>
+  </section>
+
+  <form class="cards" id="f" onsubmit="return false">
+    <div class="card">
+      <h2>Racer</h2>
+      <div class="field"><span>Difficulty</span><div class="seg" data-name="difficulty"></div></div>
+      <div class="field"><span>Character</span><div class="chars" data-name="character"></div></div>
+      <div class="field"><span>Planet</span><div class="seg" data-name="planet"></div></div>
+      <div class="field"><span>Division</span><div class="seg" data-name="division"></div></div>
+      <div class="field">
+        <label for="money">Money <output id="money_out"></output></label>
+        <div class="money" id="money_plain"><input type="number" id="money" min="0" max="999" step="1"><span class="hint">× $1,000</span></div>
+        <div class="digits" id="money_digits" hidden>
+          <input type="number" name="money2" min="0" max="15" aria-label="Hundreds of thousands digit">
+          <input type="number" name="money1" min="0" max="15" aria-label="Tens of thousands digit">
+          <input type="number" name="money0" min="0" max="15" aria-label="Thousands digit">
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Car</h2>
+      <div class="field"><span>Vehicle</span><div class="seg" data-name="car"></div></div>
+      <div class="field"><span>Color</span><div class="seg" data-name="color"></div></div>
+      <div class="field"><span>Engine</span><div class="seg" data-name="engine"></div></div>
+      <div class="field"><span>Tires</span><div class="seg" data-name="tires"></div></div>
+      <div class="field"><span>Shocks</span><div class="seg" data-name="shocks"></div></div>
+      <div class="field"><span>Armor</span><div class="seg" data-name="armor"></div></div>
+      <div class="field"><label for="front">Front weapon charges <output id="front_out"></output></label><input type="range" name="front" id="front" min="0" max="7"></div>
+      <div class="field"><label for="middle">Nitro / jump jet charges <output id="middle_out"></output></label><input type="range" name="middle" id="middle" min="0" max="7"></div>
+      <div class="field"><label for="rear">Rear weapon charges <output id="rear_out"></output></label><input type="range" name="rear" id="rear" min="0" max="7"></div>
+    </div>
+  </form>
+
+  <details>
+    <summary>About this generator</summary>
+    <p>Passwords for <i>Rock N' Roll Racing</i> (1993, Silicon &amp; Synapse, now Blizzard). The Super Nintendo and Genesis versions use the same password
+      algorithm, so one password works on both. Each password holds the difficulty, racer, planet, division, money, car, color, the four upgrade levels
+      and the three weapon charge counts. The algorithm was taken from the game's own code.</p>
+    <p>If a password won't work:</p>
+    <ul>
+      <li>Choose PASSWORD on the title screen, type the 12 characters, then move to END and press the button.</li>
+      <li>Check for mixed-up characters like 5 and S, 0 and Q, or 2 and Z. The decoder suggests fixes. There's no letter O, so an O is read as zero.</li>
+    </ul>
+    <p>The US, European and Japanese releases all accept the same passwords. The Game Boy Advance version has no password screen: it saves to six battery-backed slots instead.</p>
+  </details>
+
+  <details>
+    <summary>The cast</summary>
+    <p>Rip and Shred race on every planet; each planet adds one more rival. Names are as the game spells them.</p>
+    <ul class="cast">
+      <li><i class="pic" style="--i:7"></i>Shopkeeper</li>
+      <li><i class="pic" style="--i:0;--r:1"></i>Rip</li>
+      <li><i class="pic" style="--i:1;--r:1"></i>Shred</li>
+      <li><i class="pic" style="--i:2;--r:1"></i>Viper Mackay</li>
+      <li><i class="pic" style="--i:3;--r:1"></i>Grinder X19</li>
+      <li><i class="pic" style="--i:4;--r:1"></i>Ragewortt</li>
+      <li><i class="pic" style="--i:5;--r:1"></i>Roadkill Kelly</li>
+      <li><i class="pic" style="--i:6;--r:1"></i>Butcher Icebone</li>
+      <li><i class="pic" style="--i:7;--r:1"></i>J.B. Slash</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Secret passwords and button codes</summary>
+    <p><span class="mono">B0B! F1TC H!!!</span> (Super Nintendo) and <span class="mono">RG1Y 5HP1 2F!!</span> (Genesis) skip straight to the ending. They're named after programmer Bob Fitch. The Genesis port byte-swapped the check value, which is why its password looks scrambled.</p>
+    <p>Button codes. Press each button separately; a repeated button means release it and press it again.</p>
+    <div class="tw"><table>
+      <tr><th>Screen</th><th>Super Nintendo</th><th>Genesis</th><th>Effect</th></tr>
+      <tr><td>Character select</td><td>Hold L+R+Select, press Right on Tarquinn</td><td>Up, Right, Up, Right, Down, Left, Down, Left, Right</td><td>Olaf</td></tr>
+      <tr><td>Pre-race menu</td><td>R, Right, Down, Left, L, Up, Select</td><td>Up, Right, Down, Left, Up, Left, Down, Right, Up</td><td>+$250,000, repeatable</td></tr>
+      <tr><td>Buy Equipment</td><td>R, Right, R, L, Left, L, Up, Down, Up, Select</td><td>Down, Down, Down, Up, Down, Left, Right, Left, Down</td><td>Infinite weapon charges</td></tr>
+      <tr><td>Advance a Level (cursor on the arrow)</td><td>Left, Right, L, R, Y, A, X, B, Down, Up, Select</td><td>Left, Right, Left, Right, B, C, then hold A+B+Start</td><td>Score set to the amount needed to advance</td></tr>
+      <tr><td>Set Options (cursor on Music)</td><td>Down, Left, Up, Right, R, Down, Right, Up, Left, L, Up, Select</td><td>Down, Left, Up, Right, Down, Right, Up, Left, Right, Left</td><td>Drive off the track without falling</td></tr>
+    </table></div>
+    <p>Game Boy Advance: the Super Nintendo codes work, except Advance a Level, which is Left, Right, L, L, L, R, R, R, Down, Up, Select.</p>
+    <p>On the Super Nintendo, the Larry row in Set Options also doubles as a voice test: L and R play the announcer's 40 clips (Larry must be on).</p>
+  </details>
+
+  <details>
+    <summary>How the password is built</summary>
+    <p>Each character is a 5-bit number from the alphabet <span class="mono">BCDFGHJKLMNPQRSTVWXYZ0123456789!</span>. The game pushes 44 bits of data into a 64-bit register, appends a 16-bit checksum (the four 16-bit words XORed together, then XORed with $6573), XORs the register with B29A 56B2 B2EB B200, and reads out 12 characters from the top. Super Nintendo code: encode $81:BF5D, decode $81:BDE9. Genesis: encode $9004, decode $8DF6.</p>
+    <div class="tw"><table>
+      <tr><th>Field</th><th>Bits</th><th>Notes</th></tr>
+      <tr><td>Difficulty</td><td>2</td><td>Rookie, Veteran, Warrior</td></tr>
+      <tr><td>Money</td><td>3 × 4</td><td>Three decimal digits, in thousands</td></tr>
+      <tr><td>Character, division, planet</td><td>3, 1, 3</td><td>Division 0 = A</td></tr>
+      <tr><td>Color, car</td><td>3, 3</td><td>The color is remapped through a 5-entry table</td></tr>
+      <tr><td>Armor, shocks, tires, engine</td><td>2 each</td><td>Upgrade levels 0–3</td></tr>
+      <tr><td>Middle, rear, front charges</td><td>3 each</td><td>0–7</td></tr>
+    </table></div>
+  </details>
+
+  <footer><a href="https://github.com/maxxthunder/rocknrollracing"><svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>maxxthunder/rocknrollracing</a><a href="https://github.com/maxxthunder/rocknrollracing/blob/main/CHANGELOG.md">v1.1.0</a></footer>
+</div>
+
+<script type="module">
+import { ALPHABET, encode, decode } from './rnrr.js';
+
+const range = n => [...Array(n).keys()].map(String);
+// name: [labels, number of values the game itself produces (the rest are glitch values)]
+const OPTS = {
+  difficulty: [['Rookie', 'Veteran', 'Warrior', 'PASSWORD'], 3],
+  character: [['Snake Sanders', 'Cyberhawk', 'Ivanzypher', 'Katarina Lyons', 'Jake Badlands', 'Tarquinn', 'Olaf', 'Super racer'], 8],
+  planet: [['Chem VI', 'Drakonis', 'Bogmire', 'New Mojave', 'NHO', 'Inferno', '6', '7'], 6],
+  division: [['A', 'B'], 2],
+  car: [['Battle Trak', 'Havac', 'Dirt Devil', 'Marauder', 'Air Blade', '5', '6', '7'], 5],
+  color: [['0 black', '1', '2', '3', '4 yellow', '5', '6', '7'], 5],
+  engine: [range(4), 4], tires: [range(4), 4], shocks: [range(4), 4], armor: [range(4), 4],
+};
+const NEW_GAME = { difficulty: 0, character: 0, planet: 0, division: 1, money2: 0, money1: 0, money0: 2, car: 3, color: 2,
+  engine: 0, tires: 0, shocks: 0, armor: 0, front: 1, middle: 1, rear: 1 };  // = XGL0 RS2V WS6M, the game's own new-game password
+const MAX = { difficulty: 2, character: 6, planet: 5, division: 0, money2: 9, money1: 9, money0: 9, car: 4, color: 0,
+  engine: 3, tires: 3, shocks: 3, armor: 3, front: 7, middle: 7, rear: 7 };
+
+const $ = id => document.getElementById(id);
+const form = $('f'), glitch = $('glitch');
+for (const box of form.querySelectorAll('[data-name]')) {
+  const name = box.dataset.name, [labels, normal] = OPTS[name];
+  box.setAttribute('role', 'radiogroup');
+  box.setAttribute('aria-label', name);
+  labels.forEach((t, i) => {
+    const l = document.createElement('label');
+    l.className = (box.classList.contains('chars') ? 'char' : '') + (i >= normal ? ' glitch-opt' : '');
+    // portraits 0-6 are the playable racers; the unused super racer has none
+    const pic = name !== 'character' ? '' : i < 7 ? `<i class="pic" style="--i:${i}"></i>` : '<i class="pic none"></i>';
+    l.innerHTML = `<input type="radio" name="${name}" value="${i}">${pic}<span>${t}</span>`;
+    box.append(l);
+  });
+}
+
+let state = { ...NEW_GAME };
+const isGlitch = s => Object.entries(OPTS).some(([k, [, n]]) => s[k] >= n) || [s.money2, s.money1, s.money0].some(d => d > 9);
+const money = s => s.money2 * 100 + s.money1 * 10 + s.money0;
+const label = (k, v) => OPTS[k][0][v];
+
+function render() {
+  for (const [k, v] of Object.entries(state)) {
+    const els = form.elements[k];
+    if (els instanceof RadioNodeList) els.value = String(v); else if (els) els.value = v;
+  }
+  for (const k of ['front', 'middle', 'rear']) $(k + '_out').textContent = state[k];
+  $('money').value = Math.min(999, money(state));
+  $('money_out').textContent = '$' + (money(state) * 1000).toLocaleString('en-US');
+  const pw = encode(state);
+  $('code').innerHTML = pw.split(' ').map(g => `<span>${g}</span>`).join('');
+  $('big_code').innerHTML = $('code').innerHTML;
+  const sum = `${label('difficulty', state.difficulty)} · ${label('character', state.character)} · ${label('planet', state.planet)}, Division ${label('division', state.division)} · ${$('money_out').textContent} · ${label('car', state.car)}`;
+  $('summary').textContent = $('big_sum').textContent = sum;
+}
+
+function setGlitch(on) {
+  glitch.checked = on;
+  form.querySelectorAll('.glitch-opt').forEach(l => { l.hidden = !on; });
+  $('money_plain').hidden = on;
+  $('money_digits').hidden = !on;
+  if (!on) {
+    for (const [k, [, n]] of Object.entries(OPTS)) if (state[k] >= n) state[k] = n - 1;
+    for (const k of ['money2', 'money1', 'money0']) state[k] = Math.min(9, state[k]);
+  }
+  render();
+}
+
+form.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'money') {
+    const m = Math.max(0, Math.min(999, Math.trunc(+t.value) || 0));
+    [state.money2, state.money1, state.money0] = [Math.trunc(m / 100), Math.trunc(m / 10) % 10, m % 10];
+  } else if (t.name) {
+    state[t.name] = Math.max(0, Math.min(+t.max || 15, Math.trunc(+t.value) || 0));
+  }
+  render();
+});
+glitch.addEventListener('change', () => setGlitch(glitch.checked));
+$('reset').onclick = () => { state = { ...NEW_GAME }; render(); };
+$('max').onclick = () => { state = { ...MAX }; render(); };
+
+let copyTimer;
+$('copy').onclick = async () => {
+  try { await navigator.clipboard.writeText(encode(state)); $('copy').textContent = 'Copied ✓'; }
+  catch { $('status').textContent = 'Copy failed. Select the password and copy it by hand.'; }
+  clearTimeout(copyTimer);
+  copyTimer = setTimeout(() => { $('copy').textContent = 'Copy'; }, 1500);
+};
+$('big_open').onclick = () => $('big').showModal();
+$('big_close').onclick = () => $('big').close();
+
+// Fixes for a mistyped password: every valid password one character away, mixed-up lookalikes first
+const LOOKALIKE = { S: '5', 5: 'S', Q: '0', 0: 'Q', Z: '2', 2: 'Z', G: '6', 6: 'G', B: '8', 8: 'B', T: '7', 7: 'T', 1: 'L', L: '1' };
+function fixes(s) {
+  const out = [];
+  for (let i = 0; i < 12; i++) for (const c of ALPHABET) {
+    if (c === s[i]) continue;
+    const t = s.slice(0, i) + c + s.slice(i + 1), f = decode(t);
+    if (f && !f.super) out.push({ t, f, near: LOOKALIKE[s[i]] === c });
+  }
+  return out.sort((a, b) => b.near - a.near).slice(0, 6);
+}
+
+function load(text) {
+  const s = text.toUpperCase().replace(/[^A-Z0-9!]/g, '').replace(/O/g, '0');
+  const err = $('perr');
+  err.className = 'err';
+  if (s.length !== 12) { err.textContent = `A password is 12 characters; this has ${s.length}.`; return; }
+  const bad = [...s].filter(c => !ALPHABET.includes(c));
+  if (bad.length) { err.textContent = `${[...new Set(bad)].join(', ')} isn't in the game's alphabet (no A, E, I, O or U).`; return; }
+  const f = decode(s);
+  if (f?.super) {
+    err.className = 'ok';
+    err.textContent = `That's the ${f.super === 'snes' ? 'Super Nintendo' : 'Genesis'} skip-to-the-ending password. It doesn't hold any settings.`;
+    return;
+  }
+  if (!f) {
+    const fx = fixes(s);
+    err.textContent = fx.length ? 'Not a valid password. Did you mean: ' : "Not a valid password, and there's no one-character fix.";
+    for (const { t } of fx) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = t.replace(/(.{4})(?=.)/g, '$1 ');
+      b.onclick = () => { $('paste').value = b.textContent; load(t); };
+      err.append(b);
+    }
+    return;
+  }
+  err.textContent = '';
+  state = f;
+  setGlitch(isGlitch(f) || glitch.checked);
+}
+$('load').onclick = () => load($('paste').value);
+$('paste').addEventListener('keydown', e => { if (e.key === 'Enter') load($('paste').value); });
+
+setGlitch(false);
+</script>
+</body>
+</html>
