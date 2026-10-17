@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MEN17N1MYE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MEN17N1MYE');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23120c0d'/%3E%3Cpath d='M6 26V6h6v6h6v6h6v8z' fill='%23e8432c'/%3E%3Cpath d='M12 6h6v6h-6zM18 12h6v6h-6z' fill='%23ffcf3f'/%3E%3C/svg%3E">
 <title>Rock N' Roll Racing Password Generator: Super Nintendo (SNES) and Genesis</title>
@@ -57,6 +66,14 @@ h2 { font: 800 1.15rem var(--display); margin: 0; letter-spacing: .03em; }
 .seg label { padding: 6px 12px; cursor: pointer; background: var(--panel); border-left: 1px solid var(--line); white-space: nowrap; }
 @media (max-width: 420px) { .seg label { padding: 6px 8px; font-size: min(1rem, 4.3vw); } }
 .seg label:first-child { border-left: 0; }
+/* upgrade icons from the SNES Buy Equipment screen (the Marauder's items) */
+.lbl { display: inline-flex; align-items: center; gap: 8px; }
+.up { border-radius: 3px; image-rendering: pixelated; }
+.pic.planet { background: none; }
+/* cars: cars/<name>.png holds 24 spin frames (64px) across and the 5 paint colors down; shown at 48px, row follows the Color field */
+.pic.car { width: 48px; height: 48px; background: var(--sheet) 0 calc(var(--paint, 2) * -48px) / 1152px 240px; animation: spin 1.6s steps(24) infinite; }
+@keyframes spin { to { background-position-x: -1152px; } }
+@media (prefers-reduced-motion: reduce) { .pic.car { animation: none; } }
 .seg input, .char input { position: absolute; opacity: 0; pointer-events: none; }
 .seg input:checked + span { color: var(--brass); font-weight: 700; }
 .seg label:has(input:checked) { background: var(--brass-soft); }
@@ -97,6 +114,21 @@ table { border-collapse: collapse; font-size: .88rem; }
 td, th { border-bottom: 1px solid var(--line); padding: 4px 10px 4px 0; text-align: left; vertical-align: top; }
 td .mono { text-transform: none; }
 .tw { overflow-x: auto; }
+/* secret codes: one card per code, console tabs on top */
+.codes-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+.codes h2 { font-size: 1.5rem; }
+.code-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 12px; }
+.code-card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; }
+.code-card h3 { font: 700 1.05rem var(--body); margin: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.code-card .where { color: var(--muted); font-size: .9rem; margin: 0; }
+.code-card .note { color: var(--muted); font-size: .85rem; margin: 0; }
+.badge { font: 700 .7rem var(--body); letter-spacing: .1em; text-transform: uppercase; border-radius: 3px; padding: 2px 7px; white-space: nowrap; }
+.badge.new { background: var(--brass); color: var(--plate); }
+.badge.known { border: 1px solid var(--line); color: var(--muted); }
+.keys { display: flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.keys li { font: 700 .82rem var(--mono); padding: 3px 8px; border-radius: 4px; background: var(--bg); border: 1px solid var(--line); color: var(--plate-ink); }
+.keys.hold li { color: var(--ink); font-family: var(--body); }
+.code-card button.pw { justify-self: start; font: 700 1rem var(--mono); letter-spacing: .08em; color: var(--plate-ink); background: var(--plate); }
 footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: .9rem; color: var(--muted); }
 footer a { color: var(--brass); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
 /* big-text view for reading the password while typing it into the game */
@@ -158,7 +190,7 @@ body:has(#big[open]) { overflow: hidden; }
       <h2>Racer</h2>
       <div class="field"><span>Difficulty</span><div class="seg" data-name="difficulty"></div></div>
       <div class="field"><span>Character</span><div class="chars" data-name="character"></div></div>
-      <div class="field"><span>Planet</span><div class="seg" data-name="planet"></div></div>
+      <div class="field"><span>Planet</span><div class="chars" data-name="planet"></div></div>
       <div class="field"><span>Division</span><div class="seg" data-name="division"></div></div>
       <div class="field">
         <label for="money">Money <output id="money_out"></output></label>
@@ -172,17 +204,31 @@ body:has(#big[open]) { overflow: hidden; }
     </div>
     <div class="card">
       <h2>Car</h2>
-      <div class="field"><span>Vehicle</span><div class="seg" data-name="car"></div></div>
+      <div class="field"><span>Vehicle</span><div class="chars" data-name="car"></div></div>
       <div class="field"><span>Color</span><div class="seg" data-name="color"></div></div>
-      <div class="field"><span>Engine</span><div class="seg" data-name="engine"></div></div>
-      <div class="field"><span>Tires</span><div class="seg" data-name="tires"></div></div>
-      <div class="field"><span>Shocks</span><div class="seg" data-name="shocks"></div></div>
-      <div class="field"><span>Armor</span><div class="seg" data-name="armor"></div></div>
-      <div class="field"><label for="front">Front weapon charges <output id="front_out"></output></label><input type="range" name="front" id="front" min="0" max="7"></div>
-      <div class="field"><label for="middle">Nitro / jump jet charges <output id="middle_out"></output></label><input type="range" name="middle" id="middle" min="0" max="7"></div>
-      <div class="field"><label for="rear">Rear weapon charges <output id="rear_out"></output></label><input type="range" name="rear" id="rear" min="0" max="7"></div>
+      <div class="field"><span><span class="lbl"><img class="up" src="upgrades/engine.png" width="30" height="24" alt="">Engine</span></span><div class="seg" data-name="engine"></div></div>
+      <div class="field"><span><span class="lbl"><img class="up" src="upgrades/tires.png" width="30" height="24" alt="">Tires</span></span><div class="seg" data-name="tires"></div></div>
+      <div class="field"><span><span class="lbl"><img class="up" src="upgrades/shocks.png" width="30" height="24" alt="">Shocks</span></span><div class="seg" data-name="shocks"></div></div>
+      <div class="field"><span><span class="lbl"><img class="up" src="upgrades/armor.png" width="30" height="24" alt="">Armor</span></span><div class="seg" data-name="armor"></div></div>
+      <div class="field"><label for="front"><span class="lbl"><img class="up" src="upgrades/front.png" width="30" height="24" alt="">Front weapon charges</span><output id="front_out"></output></label><input type="range" name="front" id="front" min="0" max="7"></div>
+      <div class="field"><label for="middle"><span class="lbl"><img class="up" src="upgrades/middle.png" width="30" height="24" alt="">Nitro / jump jet charges</span><output id="middle_out"></output></label><input type="range" name="middle" id="middle" min="0" max="7"></div>
+      <div class="field"><label for="rear"><span class="lbl"><img class="up" src="upgrades/rear.png" width="30" height="24" alt="">Rear weapon charges</span><output id="rear_out"></output></label><input type="range" name="rear" id="rear" min="0" max="7"></div>
     </div>
   </form>
+
+  <section class="codes" aria-labelledby="codes_h">
+    <div class="codes-head">
+      <h2 id="codes_h">Secret codes</h2>
+      <div class="seg" id="plat" role="radiogroup" aria-label="Console">
+        <label><input type="radio" name="plat" value="snes" checked><span>Super Nintendo</span></label>
+        <label><input type="radio" name="plat" value="genesis"><span>Genesis</span></label>
+        <label><input type="radio" name="plat" value="gba"><span>Game Boy Advance</span></label>
+      </div>
+    </div>
+    <p class="hint" id="codes_sum"></p>
+    <div class="code-list" id="codes"></div>
+    <p class="hint">Press each button in a sequence separately; a repeated button means release it and press it again. Every code here was checked in an emulator (BizHawk). Click a password to load it into the decoder.</p>
+  </section>
 
   <details>
     <summary>About this generator</summary>
@@ -201,7 +247,7 @@ body:has(#big[open]) { overflow: hidden; }
     <summary>The cast</summary>
     <p>Rip and Shred race on every planet; each planet adds one more rival. Names are as the game spells them.</p>
     <ul class="cast">
-      <li><i class="pic" style="--i:7"></i>Shopkeeper</li>
+      <li><i class="pic" style="--i:7"></i>Fast Eddie (shopkeeper)</li>
       <li><i class="pic" style="--i:0;--r:1"></i>Rip</li>
       <li><i class="pic" style="--i:1;--r:1"></i>Shred</li>
       <li><i class="pic" style="--i:2;--r:1"></i>Viper Mackay</li>
@@ -211,22 +257,6 @@ body:has(#big[open]) { overflow: hidden; }
       <li><i class="pic" style="--i:6;--r:1"></i>Butcher Icebone</li>
       <li><i class="pic" style="--i:7;--r:1"></i>J.B. Slash</li>
     </ul>
-  </details>
-
-  <details>
-    <summary>Secret passwords and button codes</summary>
-    <p><span class="mono">B0B! F1TC H!!!</span> (Super Nintendo) and <span class="mono">RG1Y 5HP1 2F!!</span> (Genesis) skip straight to the ending. They're named after programmer Bob Fitch. The Genesis port byte-swapped the check value, which is why its password looks scrambled.</p>
-    <p>Button codes. Press each button separately; a repeated button means release it and press it again.</p>
-    <div class="tw"><table>
-      <tr><th>Screen</th><th>Super Nintendo</th><th>Genesis</th><th>Effect</th></tr>
-      <tr><td>Character select</td><td>Hold L+R+Select, press Right on Tarquinn</td><td>Up, Right, Up, Right, Down, Left, Down, Left, Right</td><td>Olaf</td></tr>
-      <tr><td>Pre-race menu</td><td>R, Right, Down, Left, L, Up, Select</td><td>Up, Right, Down, Left, Up, Left, Down, Right, Up</td><td>+$250,000, repeatable</td></tr>
-      <tr><td>Buy Equipment</td><td>R, Right, R, L, Left, L, Up, Down, Up, Select</td><td>Down, Down, Down, Up, Down, Left, Right, Left, Down</td><td>Infinite weapon charges</td></tr>
-      <tr><td>Advance a Level (cursor on the arrow)</td><td>Left, Right, L, R, Y, A, X, B, Down, Up, Select</td><td>Left, Right, Left, Right, B, C, then hold A+B+Start</td><td>Score set to the amount needed to advance</td></tr>
-      <tr><td>Set Options (cursor on Music)</td><td>Down, Left, Up, Right, R, Down, Right, Up, Left, L, Up, Select</td><td>Down, Left, Up, Right, Down, Right, Up, Left, Right, Left</td><td>Drive off the track without falling</td></tr>
-    </table></div>
-    <p>Game Boy Advance: the Super Nintendo codes work, except Advance a Level, which is Left, Right, L, L, L, R, R, R, Down, Up, Select.</p>
-    <p>On the Super Nintendo, the Larry row in Set Options also doubles as a voice test: L and R play the announcer's 40 clips (Larry must be on).</p>
   </details>
 
   <details>
@@ -243,7 +273,7 @@ body:has(#big[open]) { overflow: hidden; }
     </table></div>
   </details>
 
-  <footer><a href="https://github.com/maxxthunder/rocknrollracing"><svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>maxxthunder/rocknrollracing</a><a href="https://github.com/maxxthunder/rocknrollracing/blob/main/CHANGELOG.md">v1.1.0</a></footer>
+  <footer><a href="https://github.com/maxxthunder/rocknrollracing"><svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>maxxthunder/rocknrollracing</a><a href="https://github.com/maxxthunder/rocknrollracing/blob/main/CHANGELOG.md">v1.2.0</a></footer>
 </div>
 
 <script type="module">
@@ -257,9 +287,14 @@ const OPTS = {
   planet: [['Chem VI', 'Drakonis', 'Bogmire', 'New Mojave', 'NHO', 'Inferno', '6', '7'], 6],
   division: [['A', 'B'], 2],
   car: [['Battle Trak', 'Havac', 'Dirt Devil', 'Marauder', 'Air Blade', '5', '6', '7'], 5],
-  color: [['0 black', '1', '2', '3', '4 yellow', '5', '6', '7'], 5],
+  color: [['Black', 'Blue', 'Red', 'Green', 'Yellow', '5', '6', '7'], 5],
   engine: [range(4), 4], tires: [range(4), 4], shocks: [range(4), 4], armor: [range(4), 4],
 };
+const CAR_IMG = ['battle_trak', 'havac', 'dirt_devil', 'marauder', 'air_blade'];  // spin sheets ripped from the SNES car shop
+// cars are listed cheapest first (shop prices: Dirt Devil and Marauder $18,000, Air Blade $70,000, Battle Trak $110,000,
+// Havac $130,000); the values stay in the password's own order
+const SHOW_ORDER = { car: [2, 3, 4, 0, 1, 5, 6, 7] };
+const PLANET_IMG = ['chem_vi', 'drakonis', 'bogmire', 'new_mojave', 'nho', 'inferno'];  // ripped from the SNES planet select
 const NEW_GAME = { difficulty: 0, character: 0, planet: 0, division: 1, money2: 0, money1: 0, money0: 2, car: 3, color: 2,
   engine: 0, tires: 0, shocks: 0, armor: 0, front: 1, middle: 1, rear: 1 };  // = XGL0 RS2V WS6M, the game's own new-game password
 const MAX = { difficulty: 2, character: 6, planet: 5, division: 0, money2: 9, money1: 9, money0: 9, car: 4, color: 0,
@@ -271,14 +306,17 @@ for (const box of form.querySelectorAll('[data-name]')) {
   const name = box.dataset.name, [labels, normal] = OPTS[name];
   box.setAttribute('role', 'radiogroup');
   box.setAttribute('aria-label', name);
-  labels.forEach((t, i) => {
+  for (const i of SHOW_ORDER[name] ?? labels.keys()) {
+    const t = labels[i];
     const l = document.createElement('label');
     l.className = (box.classList.contains('chars') ? 'char' : '') + (i >= normal ? ' glitch-opt' : '');
-    // portraits 0-6 are the playable racers; the unused super racer has none
-    const pic = name !== 'character' ? '' : i < 7 ? `<i class="pic" style="--i:${i}"></i>` : '<i class="pic none"></i>';
+    // portraits 0-6 are the playable racers; the unused super racer and glitch planets 6-7 get a "?"
+    const pic = name === 'car' ? (CAR_IMG[i] ? `<i class="pic car" style="--sheet:url(cars/${CAR_IMG[i]}.png)"></i>` : '<i class="pic none"></i>')
+      : name === 'planet' ? (PLANET_IMG[i] ? `<img class="pic planet" src="planets/${PLANET_IMG[i]}.png" width="40" height="40" alt="">` : '<i class="pic none"></i>')
+      : name !== 'character' ? '' : i < 7 ? `<i class="pic" style="--i:${i}"></i>` : '<i class="pic none"></i>';
     l.innerHTML = `<input type="radio" name="${name}" value="${i}">${pic}<span>${t}</span>`;
     box.append(l);
-  });
+  }
 }
 
 let state = { ...NEW_GAME };
@@ -287,6 +325,7 @@ const money = s => s.money2 * 100 + s.money1 * 10 + s.money0;
 const label = (k, v) => OPTS[k][0][v];
 
 function render() {
+  form.style.setProperty('--paint', state.color < 5 ? state.color : 2);  // glitch colors 5-7 have no paint, show red
   for (const [k, v] of Object.entries(state)) {
     const els = form.elements[k];
     if (els instanceof RadioNodeList) els.value = String(v); else if (els) els.value = v;
@@ -382,6 +421,71 @@ $('load').onclick = () => load($('paste').value);
 $('paste').addEventListener('keydown', e => { if (e.key === 'Enter') load($('paste').value); });
 
 setGlitch(false);
+
+// Secret codes found in the ROMs: [effect, where, input, new?, note]
+// input: "pw:" = a password, "hold:" = a held combo, otherwise a sequence of presses
+const ADV = 'Advance a Level, cursor on the arrow';
+const ADV_NOTE = 'Press Left first so the arrow is highlighted. The screen exits once the code is in; choose Advance a Level again and it lets you through.';
+const OPT = 'Set Options, cursor on Music';
+const CODES = {
+  snes: [
+    ['Skip to the ending', 'Title → Password', 'pw:B0B! F1TC H!!!', true, 'Named after programmer Bob Fitch. Plays the Hall of Heroes, highlights and credits.'],
+    ['+$250,000 (repeatable)', 'Pre-race menu', 'R, Right, Down, Left, L, Up, Select', true],
+    ['Infinite weapon charges', 'Buy Equipment', 'R, Right, R, L, Left, L, Up, Down, Up, Select', true],
+    ['Score set to what you need to advance', ADV, 'Left, Right, L, R, Y, A, X, B, Down, Up, Select', true, ADV_NOTE + ' Japanese Super Famicom: the same code without Y.'],
+    ['Drive off the track without falling', OPT, 'Down, Left, Up, Right, R, Down, Right, Up, Left, L, Up, Select', true, 'Its Left and Right presses cancel each other out.'],
+    ['Announcer voice test', 'Set Options, Larry row (Larry on)', 'hold:R / L step through the 40 clips, Select replays', true, 'A slower workaround was known; the direct L/R method is new.'],
+    ['Play as Olaf', 'Character select, on Tarquinn', 'hold:Hold L+R+Select, press Right', false],
+    ['Unlock Inferno', 'VS mode planet select, on NHO', 'hold:Hold L+R+Select, press Right', false],
+  ],
+  genesis: [
+    ['Skip to the ending', 'Title → Password', 'pw:RG1Y 5HP1 2F!!', false, 'The Bob Fitch password with its check value byte-swapped.'],
+    ['Score set to what you need to advance', ADV, 'Left, Right, Left, Right, B, C, Hold A+B+Start', true, ADV_NOTE],
+    ['+$250,000 (repeatable)', 'Pre-race menu', 'Up, Right, Down, Left, Up, Left, Down, Right, Up', false, 'To use it again, move the cursor away and back first.'],
+    ['Infinite weapon charges', 'Buy Equipment', 'Down, Down, Down, Up, Down, Left, Right, Left, Down', false, 'The rivals get them too.'],
+    ['Drive anywhere', 'Set Options', 'Down, Left, Up, Right, Down, Right, Up, Left, Right, Left', false],
+    ['Play as Olaf / unlock Inferno', 'Character select / VS planet select', 'Up, Right, Up, Right, Down, Left, Down, Left, Right', false, 'Olaf then sits one to the left of Snake Sanders; Inferno comes after NHO.'],
+  ],
+  gba: [
+    ['Score set to what you need to advance', ADV, 'Left, Right, L, L, L, R, R, R, Down, Up, Select', true, ADV_NOTE + ' Rewritten for the GBA, which has no X or Y.'],
+    ['+$250,000 (repeatable)', 'Pre-race menu', 'R, Right, Down, Left, L, Up, Select', true],
+    ['Infinite weapon charges', 'Buy Equipment', 'R, Right, R, L, Left, L, Up, Down, Up, Select', true],
+    ['Drive off the track without falling', OPT, 'Down, Left, Up, Right, R, Down, Right, Up, Left, L, Up, Select', true],
+    ['Play as Olaf', 'Character select, on Tarquinn', 'hold:Hold L+R+Select, press Right', true],
+    ['Unlock Inferno', 'VS mode planet select, on NHO', 'hold:Hold L+R+Select, press Right', true],
+  ],
+};
+// Passwords that work on both Super Nintendo and Genesis
+const SHARED = [
+  ['Planet 6 (crashes)', 'Title → Password', 'pw:GGMR RSSB WS6M', true, "The game makes this after the Bob Fitch ending: Olaf on a planet that doesn't exist. START RACE hangs."],
+  ['Unnamed secret racer', 'Title → Password', 'pw:T5D7 HQPV SWJ!', false, 'Character 7, the super racer.'],
+  ['Fixed published password', 'Title → Password', 'pw:34D0 RQN7 1WJ!', true, 'The widely posted R4D0 RQN7 1WJ! fails the checksum; this is the corrected one.'],
+];
+const esc = t => t.replace(/[&<>"]/g, c => `&#${c.charCodeAt(0)};`);
+function card([effect, where, input, isNew, note]) {
+  const el = document.createElement('article');
+  el.className = 'code-card';
+  const how = input.startsWith('pw:') ? `<button type="button" class="pw">${esc(input.slice(3))}</button>`
+    : input.startsWith('hold:') ? `<ul class="keys hold"><li>${esc(input.slice(5))}</li></ul>`
+    : `<ol class="keys">${input.split(', ').map(k => `<li>${esc(k)}</li>`).join('')}</ol>`;
+  el.innerHTML = `<h3>${esc(effect)}<span class="badge ${isNew ? 'new">New' : 'known">Known'}</span></h3>
+    <p class="where">${esc(where)}</p>${how}${note ? `<p class="note">${esc(note)}</p>` : ''}`;
+  el.querySelector('.pw')?.addEventListener('click', e => {
+    $('paste').value = e.target.textContent;
+    load(e.target.textContent);
+    $('paste').scrollIntoView({ block: 'center' });
+  });
+  return el;
+}
+function showCodes(plat) {
+  const list = plat === 'gba' ? CODES.gba : [...CODES[plat], ...SHARED];
+  const n = list.filter(c => c[3]).length;
+  $('codes_sum').textContent = `${list.length} codes, ${n} of them new: not listed anywhere before they turned up in the ROM.`
+    + (plat === 'gba' ? ' The GBA has no password screen.' : '');
+  $('codes').replaceChildren(...list.map(card));
+}
+$('plat').addEventListener('change', e => showCodes(e.target.value));
+showCodes('snes');
 </script>
 </body>
 </html>

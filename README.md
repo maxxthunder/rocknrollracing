@@ -1,6 +1,6 @@
 # Rock N' Roll Racing — Password Generator & Secrets
 
-**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.1.0](https://img.shields.io/badge/version-1.1.0-e8432c)](CHANGELOG.md)
+**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.2.0](https://img.shields.io/badge/version-1.2.0-e8432c)](CHANGELOG.md)
 
 - **Make a password** for any racer, planet, division, car, upgrades, weapons and money.
 - **Decode a password** you already have to see what it holds, and fix typos.
@@ -25,15 +25,15 @@ Press each button in a sequence separately. A repeated button means release it a
 | Buy Equipment | R, Right, R, L, Left, L, Up, Down, Up, Select | Infinite weapon charges | **NEW** |
 | Advance a Level¹ | Left, Right, L, R, Y, A, X, B, Down, Up, Select | Score set to the amount needed to advance | **NEW** |
 | Set Options² | Down, Left, Up, Right, R, Down, Right, Up, Left, L, Up, Select | Drive off the track without falling | **NEW** |
-| Set Options, Larry row (Larry ON) | L / R steps through clips, Select replays | Announcer voice test, 40 clips | Known as a workaround; the direct L/R method is new |
+| Set Options, Larry row (Larry ON) | R / L step forward / back through the clips (wrapping 0–39), Select replays | Announcer voice test, 40 clips | Known as a workaround; the direct L/R method is new |
 
 ### Genesis
 
 | Where | Input | Effect | |
 |---|---|---|---|
 | Title → Password | `RG1Y 5HP1 2F!!` | Skips to the ending | Known |
-| Character select / VS planet select | Up, Right, Up, Right, Down, Left, Down, Left, Right | Olaf / Inferno | Known |
-| Pre-race menu | Up, Right, Down, Left, Up, Left, Down, Right, Up | +$250,000 (repeatable) | Known |
+| Character select / VS planet select | Up, Right, Up, Right, Down, Left, Down, Left, Right | Olaf (one Left of Snake Sanders) / Inferno (after NHO) | Known |
+| Pre-race menu | Up, Right, Down, Left, Up, Left, Down, Right, Up | +$250,000 (repeatable: move the cursor away and back between uses) | Known |
 | Buy Equipment | Down, Down, Down, Up, Down, Left, Right, Left, Down | Infinite weapon charges (rivals get them too) | Known |
 | Advance a Level¹ | Left, Right, Left, Right, B, C, then hold A+B+Start | Score set to the amount needed to advance | **NEW** |
 | Set Options | Down, Left, Up, Right, Down, Right, Up, Left, Right, Left | Drive anywhere | Known |
@@ -47,14 +47,14 @@ The GBA port is the SNES code recompiled, so it keeps the SNES codes with GBA bu
 
 | Where | Input | Effect | Tested |
 |---|---|---|---|
-| Character select | Highlight Tarquinn, hold L+R+Select, press Right | Olaf | ROM only |
-| VS mode planet select | Highlight NHO, hold L+R+Select, press Right | Inferno | ROM only |
+| Character select | Highlight Tarquinn, hold L+R+Select, press Right | Olaf | Yes |
+| VS mode planet select | Highlight NHO, hold L+R+Select, press Right | Inferno | Yes |
 | Pre-race menu | R, Right, Down, Left, L, Up, Select | +$250,000 (repeatable) | Yes |
-| Buy Equipment | R, Right, R, L, Left, L, Up, Down, Up, Select | Infinite weapon charges | ROM only |
+| Buy Equipment | R, Right, R, L, Left, L, Up, Down, Up, Select | Infinite weapon charges | Yes |
 | Advance a Level¹ | Left, Right, L, L, L, R, R, R, Down, Up, Select | Score set to the amount needed to advance | Yes |
-| Set Options² | Down, Left, Up, Right, R, Down, Right, Up, Left, L, Up, Select | Drive off the track without falling | ROM only |
+| Set Options² | Down, Left, Up, Right, R, Down, Right, Up, Left, L, Up, Select | Drive off the track without falling | Yes |
 
-"ROM only" means the code table and its check are in the ROM, identical to the SNES, but I didn't run it in the emulator. The four sequence tables are at `0x08032CBC` (Buy Equipment), `0x0803AA6F` (pre-race), `0x0803BF4B` (options) and `0x08046C31` (advance). The matcher is at `0x08032CD4`, and it has exactly four callers. The two hold-button checks are at `0x08036384` and `0x0803657C`. The European GBA ROM has the same tables.
+Every code on this page was run in BizHawk and its effect checked in RAM or on screen, on the US ROMs (and the Japanese Super Famicom for its Advance code). The four sequence tables are at `0x08032CBC` (Buy Equipment), `0x0803AA6F` (pre-race), `0x0803BF4B` (options) and `0x08046C31` (advance). The matcher is at `0x08032CD4`, and it has exactly four callers. The two hold-button checks are at `0x08036384` and `0x0803657C`. The European GBA ROM has the same tables.
 
 ### Glitch passwords (both systems)
 
@@ -114,7 +114,7 @@ The total is still 60 bits and 12 characters, with the same XOR key. After a new
 
 ## The cast
 
-The portraits on the page come from `characters.png`. The ROM's rival name table is Viper Mackay, Grinder X19, Ragewortt, Roadkill Kelly, Butcher Icebone, J.B. Slash, Rip, Shred. "Ragewortt" is spelled that way in the SNES, Genesis and GBA ROMs.
+The portraits on the page come from `characters.png`. The ROM's rival name table is Viper Mackay, Grinder X19, Ragewortt, Roadkill Kelly, Butcher Icebone, J.B. Slash, Rip, Shred. "Ragewortt" is spelled that way in the SNES, Genesis and GBA ROMs. The shopkeeper is Fast Eddie, and the guy on the Advance a Level screen is Captain Braddock.
 
 ## How the button codes work
 
@@ -147,5 +147,8 @@ Each frame, the matcher compares the held buttons with the next entry in a code 
 | `tools/disasm.py`, `tools/disasm68k.py`, `tools/reasm*.py` | Full-ROM disassemblers and reassemblers (from the Soldiers of Fortune project) |
 | `disasm/snes/`, `disasm/genesis/` | US ROM listings that reassemble byte-identical; `disasm/names.txt` labels the password, input and cheat routines and RAM |
 | `characters.png`, `rock_n_roll_racing_logo.png` | Page art: racer portraits (8 × 2 tiles of 64 px) and the logo |
+| `planets/` | The six planets, captured from the SNES VS mode planet select (99 px, transparent) |
+| `upgrades/` | Engine, tires, shocks, armor and weapon icons, captured from the SNES Buy Equipment screen (the Marauder's items) |
+| `cars/` | Spinning car sheets from the SNES car shop: 24 frames of 64 px across (one full turn, 4 game frames each) and the 5 paints down (black, blue, red, green, yellow), rebuilt from VRAM, OAM and CGRAM with real transparency |
 
 To run the page locally, serve the folder, e.g. `python -m http.server`. ROMs are not included.
