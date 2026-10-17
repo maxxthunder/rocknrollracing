@@ -124,6 +124,11 @@ td .mono { text-transform: none; }
 .code-card .note { color: var(--muted); font-size: .85rem; margin: 0; }
 .badge { font: 700 .7rem var(--body); letter-spacing: .1em; text-transform: uppercase; border-radius: 3px; padding: 2px 7px; white-space: nowrap; }
 .badge.new { background: var(--brass); color: var(--plate); }
+/* "★ New" hangs from the card's top edge like a tab; the title keeps clear of it */
+.code-card { position: relative; }
+.code-card .badge.new { position: absolute; top: 0; right: 16px; border-radius: 0 0 4px 4px; padding: 3px 9px; }
+.code-card:has(.badge.new) { padding-top: 20px; }
+.code-card:has(.badge.new) h3 { padding-right: 76px; }
 .badge.known { border: 1px solid var(--line); color: var(--muted); }
 .keys { display: flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0; list-style: none; }
 .keys li { font: 700 .82rem var(--mono); padding: 3px 8px; border-radius: 4px; background: var(--bg); border: 1px solid var(--line); color: var(--plate-ink); }
@@ -468,7 +473,7 @@ function card([effect, where, input, isNew, note]) {
   const how = input.startsWith('pw:') ? `<button type="button" class="pw">${esc(input.slice(3))}</button>`
     : input.startsWith('hold:') ? `<ul class="keys hold"><li>${esc(input.slice(5))}</li></ul>`
     : `<ol class="keys">${input.split(', ').map(k => `<li>${esc(k)}</li>`).join('')}</ol>`;
-  el.innerHTML = `<h3>${esc(effect)}<span class="badge ${isNew ? 'new">New' : 'known">Known'}</span></h3>
+  el.innerHTML = `<h3>${esc(effect)}<span class="badge ${isNew ? 'new">★ New' : 'known">Known'}</span></h3>
     <p class="where">${esc(where)}</p>${how}${note ? `<p class="note">${esc(note)}</p>` : ''}`;
   el.querySelector('.pw')?.addEventListener('click', e => {
     $('paste').value = e.target.textContent;
