@@ -2,7 +2,7 @@
 
 # Rock N' Roll Racing — Password Generator & Secrets
 
-**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.3.1](https://img.shields.io/badge/version-1.3.1-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
+**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.4.0](https://img.shields.io/badge/version-1.4.0-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
 
 ![The five cars from the SNES car shop, spinning](img/readme/cars.gif)
 
@@ -94,6 +94,33 @@ To make other glitch passwords, turn on Glitch mode in the generator. It unlocks
 - **Hidden screens:** the per-frame screen handler table at `$80:8197` has 18 entries, and normal play reaches all of them, so there's no leftover debug or test screen behind it.
 - **Debug switches:** every RAM address the game reads but never writes (found by scanning the GBA's ARM version of the code) was set in the emulator during a race. They only changed how the race played out (they're per-car race tables filled in bulk), and none opened a debug menu or test mode.
 - **Unused art:** the GBA stores its sprites uncompressed, and the car shop art covers exactly the five cars, plus effects and a font. There's no portrait or name for the unnamed super racer. The Super Nintendo and Genesis compress their graphics with a format we haven't decoded, so their backgrounds haven't been searched yet.
+
+## Beta builds
+
+Two US Super Nintendo prototypes, both with a blank cartridge header.
+
+![Beta 1: the "Rock & Roll Racing" title, Rookie / Advanced / Expert, the Commando in the car shop, a shop message, and the Commando racing on Chem VI](img/readme/beta1.png)
+
+<img src="img/readme/beta1_commando.gif" align="right" width="148" alt="The cut Commando spinning in the Beta 1 car shop">
+
+**Beta 1** is an early build. Seen in the emulator:
+
+- **The Commando, a sixth car.** It's a lifted jeep with a bull bar, sold for $18,000 in the first car shop between the Dirt Devil and the Marauder. It has its own spinning shop art and drives normally in a race. The final game drops it and its name; its cars are Battle Trak, Havac, Dirt Devil, Marauder and Air Blade.
+- **"Rock & Roll Racing"** on the title screen, not "Rock N' Roll".
+- **Rookie, Advanced and Expert** instead of Rookie, Veteran and Warrior.
+- **Shop messages** in the info panel, such as YOU MUST BUY A CAR! when you try to leave without one.
+
+In the ROM text but not seen on screen:
+
+- More shop messages: CAN'T AFFORD IT, NOTHING TO BUY!, THE CAR IS FULL!, SAME CAR YOU HAVE!, YOU HAVE THAT! and USELESS ON YOURS!
+- **Rednaugh Zypher**, an earlier name for Ivanzypher, in a second list of racer names that sits next to the rivals' names. The character select already says Ivanzypher.
+- Two-player text: LEAVE OTHER PLAYER BEHIND? and PLANETS NOT THE SAME!, probably for when only one player qualifies to advance and for two players' passwords being on different planets.
+- YOU HAVE ENOUGH / NOT ENOUGH PTS, END OF SEASON and WELCOME TO BAY2, from earlier versions of the advance and season screens.
+- The typos ROGUE MISSLE and LIGHTINING NITRO, fixed only in the final game.
+
+Its password check uses a 13-bit checksum instead of 16 bits and has no Bob Fitch password, so final-game passwords most likely won't work in it (not tested).
+
+**Beta 2** is nearly final: the same title, menus, password code and Bob Fitch password as the retail game. The differences are the ROGUE MISSLE / LIGHTINING NITRO typos and the missing "for use only on NTSC compatible systems" region screen.
 
 ## Regions
 
@@ -209,7 +236,5 @@ To run the page locally, serve the folder, e.g. `python -m http.server`. ROMs ar
 ## Credits and legal
 
 *Rock N' Roll Racing* is © 1993 Interplay Productions and Silicon & Synapse (now Blizzard Entertainment). This project isn't affiliated with or endorsed by Blizzard or Interplay. The game art on the page and in this repo (portraits, logo, planets, cars, icons and screenshots) belongs to them and is used here for reference. The disassembly listings are for research; no ROMs are included.
-
-The page uses Google Analytics to count visits.
 
 The code in this repo (the generator, codec, tests and tools) is released under the [MIT License](LICENSE).
