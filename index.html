@@ -70,8 +70,8 @@ h2 { font: 800 1.15rem var(--display); margin: 0; letter-spacing: .03em; }
 .lbl { display: inline-flex; align-items: center; gap: 8px; }
 .up { border-radius: 3px; image-rendering: pixelated; }
 .pic.planet { background: none; }
-/* cars: img/cars/<name>.png holds 24 spin frames (64px) across and the 5 paint colors down; shown at 48px, row follows the Color field */
-.pic.car { width: 48px; height: 48px; background: var(--sheet) 0 calc(var(--paint, 2) * -48px) / 1152px 240px; animation: spin 1.6s steps(24) infinite; }
+/* cars: img/cars/<name>.png holds 24 spin frames (64px) across and the 8 paint colors down (5-7 are the glitch paints); shown at 48px, row follows the Color field */
+.pic.car { width: 48px; height: 48px; background: var(--sheet) 0 calc(var(--paint, 2) * -48px) / 1152px 384px; animation: spin 1.6s steps(24) infinite; }
 @keyframes spin { to { background-position-x: -1152px; } }
 @media (prefers-reduced-motion: reduce) { .pic.car { animation: none; } }
 .seg input, .char input { position: absolute; opacity: 0; pointer-events: none; }
@@ -330,7 +330,7 @@ const money = s => s.money2 * 100 + s.money1 * 10 + s.money0;
 const label = (k, v) => OPTS[k][0][v];
 
 function render() {
-  form.style.setProperty('--paint', state.color < 5 ? state.color : 2);  // glitch colors 5-7 have no paint, show red
+  form.style.setProperty('--paint', state.color);
   for (const [k, v] of Object.entries(state)) {
     const els = form.elements[k];
     if (els instanceof RadioNodeList) els.value = String(v); else if (els) els.value = v;

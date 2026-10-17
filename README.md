@@ -78,7 +78,22 @@ The GBA port is the SNES code recompiled, so it keeps the SNES codes. Only the A
 
 All three work on the Super Nintendo. The Genesis accepts them too, but with the super racer (the last two) its pre-race screen draws only the sprites: no menu, background or player portrait.
 
-To make other glitch passwords, turn on Glitch mode in the generator. It unlocks money digits 10–15, colors 5–7, planets 6–7, cars 5–7 and difficulty 3.
+To make other glitch passwords, turn on Glitch mode in the generator. It unlocks money digits 10–15, colors 5–7, planets 6–7, cars 5–7 and difficulty 3. Here's what each one does on the Super Nintendo:
+
+| Glitch value | What happens |
+|---|---|
+| Colors 5–7 | Working two-tone paint jobs: teal and purple (5), orange and green (6), green and dark green (7). The password's color goes through a 5-entry table at `$81:C36A`; 5–7 read the code bytes after it (`8B 4B AB`) as palette numbers, so the body colors come from far past the real paints in the table at `$80:D90D` while the trim stays normal. The car picker shows them. Races run normally. |
+| Cars 5–7 | The car shows up as a block of noise, in the pre-race bubble and on the track, and it can't drive. There's no art for a sixth car anywhere in the ROMs. |
+| Planet 6 | See `GGMR RSSB WS6M` above: garbled pre-race screen, START RACE hangs. |
+| Planet 7 | Same as planet 6: "Races run 0 of 1", a garbled rival portrait, and START RACE hangs. |
+| Difficulty 3 | Accepted; the pre-race screen and the race look the same as Rookie. |
+| Money digit 10–15 | The digit shows as "?" (e.g. "$?02,000"). |
+
+### Other places we looked
+
+- **Hidden screens:** the per-frame screen handler table at `$80:8197` has 18 entries, and normal play reaches all of them, so there's no leftover debug or test screen behind it.
+- **Debug switches:** every RAM address the game reads but never writes (found by scanning the GBA's ARM version of the code) was set in the emulator during a race. They only changed how the race played out (they're per-car race tables filled in bulk), and none opened a debug menu or test mode.
+- **Unused art:** the GBA stores its sprites uncompressed, and the car shop art covers exactly the five cars, plus effects and a font. There's no portrait or name for the unnamed super racer. The Super Nintendo and Genesis compress their graphics with a format we haven't decoded, so their backgrounds haven't been searched yet.
 
 ## Regions
 
@@ -182,7 +197,7 @@ The total is still 60 bits and 12 characters, with the same XOR key. After a new
 | `img/characters.png`, `img/rock_n_roll_racing_logo.png` | Page art: racer portraits (8 × 2 tiles of 64 px) and the logo |
 | `img/planets/` | The six planets, captured from the SNES VS mode planet select (99 px, transparent) |
 | `img/upgrades/` | Engine, tires, shocks, armor and weapon icons, captured from the SNES Buy Equipment screen (the Marauder's items) |
-| `img/cars/` | Spinning car sheets from the SNES car shop: 24 frames of 64 px across (one full turn, 4 game frames each) and the 5 paints down, rebuilt from VRAM, OAM and CGRAM with real transparency |
+| `img/cars/` | Spinning car sheets from the SNES car shop: 24 frames of 64 px across (one full turn, 4 game frames each) and the 8 paints down (5–7 the glitch paints, built from the ROM palette), rebuilt from VRAM, OAM and CGRAM with real transparency |
 | `img/readme/` | Images for this README |
 
 To run the page locally, serve the folder, e.g. `python -m http.server`. ROMs are not included.
