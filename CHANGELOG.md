@@ -2,6 +2,9 @@
 
 Changes to the [password generator](https://maxxthunder.github.io/rocknrollracing/). The version is shown at the bottom of the page.
 
+## 1.4.3 (2026-10-17)
+- README: the European Super Nintendo beta, whose opening is marked "For Ocean's customers only" and adds a Software Creations logo.
+
 ## 1.4.2 (2026-10-17)
 - Corrected the README: Beta 1's "Commando" isn't a cut car. It's the Dirt Devil under an earlier name, and the names after it are shifted one car along.
 

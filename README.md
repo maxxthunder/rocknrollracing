@@ -2,7 +2,7 @@
 
 # Rock N' Roll Racing — Password Generator & Secrets
 
-**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.4.2](https://img.shields.io/badge/version-1.4.2-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
+**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.4.3](https://img.shields.io/badge/version-1.4.3-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
 
 ![The five cars from the SNES car shop, spinning](img/readme/cars.gif)
 
@@ -97,7 +97,7 @@ To make other glitch passwords, turn on Glitch mode in the generator. It unlocks
 
 ## Beta builds
 
-Two US Super Nintendo prototypes, both with a blank cartridge header.
+Three Super Nintendo prototypes, two US and one European, all with a blank cartridge header.
 
 ![Beta 1: the "Rock & Roll Racing" title, Rookie / Advanced / Expert, the Dirt Devil sold as "Commando" in the car shop, a shop message, and the same car racing on Chem VI](img/readme/beta1.png)
 
@@ -121,6 +121,14 @@ In the ROM text but not seen on screen:
 Its password check uses a 13-bit checksum instead of 16 bits and has no Bob Fitch password, so final-game passwords most likely won't work in it (not tested).
 
 **Beta 2** is nearly final: the same title, menus, password code and Bob Fitch password as the retail game. The differences are the ROGUE MISSLE / LIGHTINING NITRO typos and the missing "for use only on NTSC compatible systems" region screen.
+
+**Europe beta** is the US game with an opening marked for Ocean, the European publisher Ocean Software:
+
+![Europe beta: "For Ocean's customers only. Courtesy of..." above the Interplay logo, and a Software Creations logo under Silicon & Synapse](img/readme/europe_beta.png)
+
+- The Interplay screen adds "For Ocean's customers only. Courtesy of...", and the Silicon & Synapse screen adds a Software Creations logo. Both are drawn as art, not stored as text. The retail European release has neither.
+- Everything else matches the retail game: the title, menus, text (with ROGUE MISSILE and LIGHTNING NITRO spelled right), password code and Bob Fitch password.
+- The game code is the US build's apart from about 40 bytes: moved addresses and one value changed from $58 to $69. Like the retail European release, it skips the US NTSC region check.
 
 ## Regions
 
