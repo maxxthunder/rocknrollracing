@@ -2,6 +2,13 @@
 
 Changes to the [password generator](https://maxxthunder.github.io/rocknrollracing/). The version is shown at the bottom of the page.
 
+## 1.5.0 (2026-10-27)
+- A password decodes as soon as all 12 characters are typed or pasted.
+- Keyboard shortcuts on a computer: paste a password anywhere on the page to decode it, C copies, B opens Big text.
+- Money has − and + buttons (also on each digit in glitch mode, which stack on phones), and the box can be cleared to type a new amount without snapping back to 0.
+- On phones, the weapon sliders follow your finger anywhere along them without scrolling the page, and autocorrect is off in the decode box.
+- Bigger tap targets for the Glitch mode switch and the section headings at the bottom.
+
 ## 1.4.3 (2026-10-17)
 - README: the European Super Nintendo beta, whose opening is marked "For Ocean's customers only" and adds a Software Creations logo.
 

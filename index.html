@@ -88,9 +88,15 @@ h2 { font: 800 1.15rem var(--display); margin: 0; letter-spacing: .03em; }
 .field > span, .field > label { font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
 .field output { font: 700 .9rem var(--mono); color: var(--ink); letter-spacing: 0; text-transform: none; }
 input[type=number], input[type=text] { font: 1rem var(--body); padding: 7px 9px; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%; box-sizing: border-box; }
-input[type=range] { width: 100%; accent-color: var(--brass); }
+input[type=range] { width: 100%; accent-color: var(--brass); touch-action: none; }
 .money { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
 .digits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (max-width: 520px) { .digits { grid-template-columns: 1fr; } }  /* three steppers don't fit side by side; keep the digits in order */
+/* − box + steppers; they replace the box's tiny spinner arrows */
+.q { display: flex; gap: 4px; min-width: 0; }
+.q input { min-width: 2.5em; flex: 1; text-align: center; appearance: textfield; }
+.q input::-webkit-inner-spin-button { appearance: none; }
+.q button { padding: 0; min-width: 36px; min-height: 36px; font: 700 1.1rem var(--body); }
 .chars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
 .cast { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; padding: 0; list-style: none; }
 .cast li { display: flex; align-items: center; gap: 8px; color: var(--ink); }
@@ -101,7 +107,7 @@ input[type=range] { width: 100%; accent-color: var(--brass); }
 .char { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); cursor: pointer; font-size: .9rem; }
 .char:has(input:checked) { border-color: var(--brass); background: var(--brass-soft); color: var(--brass); font-weight: 700; }
 .char:has(input:focus-visible) { outline: 2px solid var(--brass); outline-offset: 2px; }
-.toggle { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
+.toggle { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; min-height: 36px; }
 .toggle input { accent-color: var(--brass); width: 1.1em; height: 1.1em; }
 .hint { font-size: .85rem; color: var(--muted); margin: 0; }
 .err { color: var(--bad); font-size: .9rem; margin: 0; }
@@ -112,7 +118,7 @@ input[type=range] { width: 100%; accent-color: var(--brass); }
 .mono { font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 p .mono, td .mono { word-break: break-all; }
 details { color: var(--muted); font-size: .92rem; }
-summary { cursor: pointer; color: var(--ink); }
+summary { cursor: pointer; color: var(--ink); padding: 8px 0; }
 table { border-collapse: collapse; font-size: .88rem; }
 td, th { border-bottom: 1px solid var(--line); padding: 4px 10px 4px 0; text-align: left; vertical-align: top; }
 td .mono { text-transform: none; }
@@ -163,8 +169,8 @@ body:has(#big[open]) { overflow: hidden; }
     <div class="code" id="code"></div>
     <div class="summary" id="summary"></div>
     <div class="plate-row">
-      <button id="big_open" type="button">Big text</button>
-      <button id="copy" class="ghost" type="button">Copy</button>
+      <button id="big_open" type="button" title="Shortcut: B" aria-keyshortcuts="B">Big text</button>
+      <button id="copy" class="ghost" type="button" title="Shortcut: C. Pasting anywhere decodes a password." aria-keyshortcuts="C">Copy</button>
       <button id="max" class="ghost" type="button">Max everything</button>
       <button id="reset" class="ghost" type="button">New game</button>
       <span class="status" id="status" aria-live="polite"></span>
@@ -173,9 +179,9 @@ body:has(#big[open]) { overflow: hidden; }
 
   <div class="decode">
     <div class="row">
-      <input type="text" id="paste" class="mono" maxlength="20" placeholder="12 characters" autocomplete="off" spellcheck="false" style="max-width:20ch" aria-label="Password to decode">
+      <input type="text" id="paste" class="mono" maxlength="20" placeholder="12 characters" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="max-width:20ch" aria-label="Password to decode">
       <button id="load" type="button">Decode</button>
-      <span class="hint">Have a password? Paste it to load its settings.</span>
+      <span class="hint">Have a password? Type or paste it to load its settings.</span>
     </div>
     <div class="err" id="perr" aria-live="polite"></div>
   </div>
@@ -202,11 +208,11 @@ body:has(#big[open]) { overflow: hidden; }
       <div class="field"><span>Division</span><div class="seg" data-name="division"></div></div>
       <div class="field">
         <label for="money">Money <output id="money_out"></output></label>
-        <div class="money" id="money_plain"><input type="number" id="money" min="0" max="999" step="1"><span class="hint">× $1,000</span></div>
+        <div class="money" id="money_plain"><span class="q"><button type="button" data-q="down" aria-label="Money: one less">−</button><input type="number" id="money" min="0" max="999" step="1"><button type="button" data-q="up" aria-label="Money: one more">+</button></span><span class="hint">× $1,000</span></div>
         <div class="digits" id="money_digits" hidden>
-          <input type="number" name="money2" min="0" max="15" aria-label="Hundreds of thousands digit">
-          <input type="number" name="money1" min="0" max="15" aria-label="Tens of thousands digit">
-          <input type="number" name="money0" min="0" max="15" aria-label="Thousands digit">
+          <span class="q"><button type="button" data-q="down" aria-label="Hundreds of thousands digit: one less">−</button><input type="number" name="money2" min="0" max="15" aria-label="Hundreds of thousands digit"><button type="button" data-q="up" aria-label="Hundreds of thousands digit: one more">+</button></span>
+          <span class="q"><button type="button" data-q="down" aria-label="Tens of thousands digit: one less">−</button><input type="number" name="money1" min="0" max="15" aria-label="Tens of thousands digit"><button type="button" data-q="up" aria-label="Tens of thousands digit: one more">+</button></span>
+          <span class="q"><button type="button" data-q="down" aria-label="Thousands digit: one less">−</button><input type="number" name="money0" min="0" max="15" aria-label="Thousands digit"><button type="button" data-q="up" aria-label="Thousands digit: one more">+</button></span>
         </div>
       </div>
     </div>
@@ -281,7 +287,7 @@ body:has(#big[open]) { overflow: hidden; }
     </table></div>
   </details>
 
-  <footer><a href="https://github.com/maxxthunder/rocknrollracing"><svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>maxxthunder/rocknrollracing</a><a href="https://github.com/maxxthunder/rocknrollracing/blob/main/CHANGELOG.md">v1.4.3</a></footer>
+  <footer><a href="https://github.com/maxxthunder/rocknrollracing"><svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>maxxthunder/rocknrollracing</a><a href="https://github.com/maxxthunder/rocknrollracing/blob/main/CHANGELOG.md">v1.5.0</a></footer>
 </div>
 
 <script type="module">
@@ -331,14 +337,17 @@ let state = { ...NEW_GAME };
 const isGlitch = s => Object.entries(OPTS).some(([k, [, n]]) => s[k] >= n) || [s.money2, s.money1, s.money0].some(d => d > 9);
 const label = (k, v) => OPTS[k][0][v];
 
+// leave a number box alone while it's being typed in (clearing it to retype shouldn't snap back to 0); it tidies up on change
+let tidy = false;
+const put = (el, v) => { if (tidy || el !== document.activeElement) el.value = v; };
 function render() {
   form.style.setProperty('--paint', state.color);
   for (const [k, v] of Object.entries(state)) {
     const els = form.elements[k];
-    if (els instanceof RadioNodeList) els.value = String(v); else if (els) els.value = v;
+    if (els instanceof RadioNodeList) els.value = String(v); else if (els) put(els, v);
   }
   for (const k of ['front', 'middle', 'rear']) $(k + '_out').textContent = state[k];
-  $('money').value = Math.min(999, money(state) / 1000);
+  put($('money'), Math.min(999, money(state) / 1000));
   $('money_out').textContent = '$' + money(state).toLocaleString('en-US');
   const pw = encode(state);
   $('code').innerHTML = pw.split(' ').map(g => `<span>${g}</span>`).join('');
@@ -369,6 +378,25 @@ form.addEventListener('input', e => {
   }
   render();
 });
+form.addEventListener('change', e => { if (e.target.type === 'number') { tidy = true; render(); tidy = false; } });
+form.addEventListener('click', e => {  // a number box's − / + buttons
+  const q = e.target.closest('[data-q]');
+  if (!q) return;
+  const input = q.parentElement.querySelector('input');
+  input[q.dataset.q === 'up' ? 'stepUp' : 'stepDown']();
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+});
+// iOS Safari drags a slider only by its thumb and scrolls the page for any other touch on it: take every touch on a slider here
+const slide = e => {
+  const t = e.target;
+  if (t.type !== 'range') return;
+  e.preventDefault();
+  const r = t.getBoundingClientRect(), x = Math.min(1, Math.max(0, (e.touches[0].clientX - r.left) / r.width));
+  const v = Math.round(+t.min + x * (t.max - t.min));
+  if (v !== +t.value) { t.value = v; t.dispatchEvent(new Event('input', { bubbles: true })); }
+};
+form.addEventListener('touchstart', slide, { passive: false });
+form.addEventListener('touchmove', slide, { passive: false });
 glitch.addEventListener('change', () => setGlitch(glitch.checked));
 $('reset').onclick = () => { state = { ...NEW_GAME }; render(); };
 $('max').onclick = () => { state = { ...MAX }; render(); };
@@ -426,6 +454,23 @@ function load(text) {
 }
 $('load').onclick = () => load($('paste').value);
 $('paste').addEventListener('keydown', e => { if (e.key === 'Enter') load($('paste').value); });
+// decode as soon as a whole password is typed or pasted
+$('paste').addEventListener('input', e => {
+  if (e.target.value.toUpperCase().replace(/[^A-Z0-9!]/g, '').length >= 12) load(e.target.value); else $('perr').textContent = '';
+});
+// desktop shortcuts, while no text box has focus: paste anywhere decodes, C copies, B opens the big view
+const typing = () => document.activeElement?.matches('input:not([type=range],[type=checkbox],[type=radio]), textarea, select') || $('big').open;
+document.addEventListener('paste', e => {
+  if (typing()) return;
+  e.preventDefault();
+  $('paste').value = e.clipboardData.getData('text');
+  load($('paste').value);
+});
+document.addEventListener('keydown', e => {
+  if (typing() || e.ctrlKey || e.metaKey || e.altKey) return;
+  const b = { c: $('copy'), b: $('big_open') }[e.key.toLowerCase()];
+  if (b) { e.preventDefault(); b.click(); }
+});
 
 setGlitch(false);
 
