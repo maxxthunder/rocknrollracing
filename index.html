@@ -50,6 +50,11 @@ header .sub { margin-inline: auto; }
 /* the password fills the plate's width: font size follows the plate (container units), groups spread edge to edge */
 .code { font: 700 10.6cqi/1 var(--mono); letter-spacing: .12em; display: flex; justify-content: space-between; gap: .4em; }
 .code span { margin-right: -.12em; }
+.code b, .big-code b { font-weight: inherit; border-radius: 3px; }
+/* characters that differ from the password as loaded, and the ones a pointed-at setting lives in */
+.code b.chg, .big-code b.chg { box-shadow: 0 .08em 0 var(--brass); }
+.code b.hl { background: color-mix(in srgb, var(--plate-ink) 28%, transparent); }
+#symbol_info { min-height: 1.3em; font-size: .85rem; opacity: .8; margin: 0; }
 .summary { font-size: .95rem; opacity: .9; }
 .plate-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 button { font: 500 .95rem var(--body); border-radius: 4px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
@@ -148,12 +153,22 @@ footer a { color: var(--brass); text-decoration: none; display: inline-flex; ali
 /* big-text view for reading the password while typing it into the game */
 #big { inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border: 0; padding: 24px 16px; box-sizing: border-box;
   background: var(--plate); color: var(--plate-ink); }
-#big[open] { display: grid; place-content: center; justify-items: center; gap: 24px; text-align: center; }
+#big[open] { display: grid; place-content: safe center; justify-items: center; gap: 18px; overflow-y: auto; text-align: center; }
 #big .summary { font-size: 1.1rem; text-wrap: balance; }
 body:has(#big[open]) { overflow: hidden; }
 .big-code { display: flex; justify-content: center; gap: .5em; font: 700 min(7.9vw, 22vh)/1.1 var(--mono); letter-spacing: .12em; }
 .big-code span { padding-left: .12em; }
-@media (max-width: 700px) { .big-code { flex-direction: column; gap: .15em; font-size: min(26.3vw, 17vh); } }
+@media (max-width: 700px) { .big-code { flex-direction: column; gap: .1em; font-size: min(17vw, 9vh); } }
+.big-code b.done { opacity: .3; }
+.big-code b.cur { outline: .06em solid var(--brass); outline-offset: .04em; }
+/* typing guide: the game's entry grid with the next character lit */
+.guide { display: grid; gap: 10px; justify-items: center; }
+.kb { display: grid; grid-template-columns: repeat(8, minmax(26px, 2.2em)); gap: 4px; background: #6b6b6b; padding: 10px; border-radius: 6px; }
+.kb > span { display: grid; place-items: center; height: 2em; border: 2px solid transparent; border-radius: 3px; color: #fff; font: 700 .9rem var(--mono); }
+.kb > span.at { border-color: var(--plate-ink); }
+.kb .small { font-size: .62rem; }
+#guide_step { margin: 0; font-size: 1rem; text-wrap: balance; }
+#big .hint { color: inherit; opacity: .75; max-width: 44ch; text-wrap: balance; }
 #big_close { background: var(--brass); color: var(--plate); border-color: transparent; font-weight: 700; font-size: 1.1rem; padding: 10px 28px; }
 </style>
 </head>
@@ -168,8 +183,9 @@ body:has(#big[open]) { overflow: hidden; }
     <div class="plate-label">Password</div>
     <div class="code" id="code"></div>
     <div class="summary" id="summary"></div>
+    <p id="symbol_info" aria-live="polite"></p>
     <div class="plate-row">
-      <button id="big_open" type="button" title="Shortcut: B" aria-keyshortcuts="B">Big text</button>
+      <button id="big_open" type="button" title="Shortcut: B" aria-keyshortcuts="B">Big text and typing guide</button>
       <button id="copy" class="ghost" type="button" title="Shortcut: C. Pasting anywhere decodes a password." aria-keyshortcuts="C">Copy</button>
       <button id="max" class="ghost" type="button">Max everything</button>
       <button id="reset" class="ghost" type="button">New game</button>
@@ -189,6 +205,12 @@ body:has(#big[open]) { overflow: hidden; }
   <dialog id="big" aria-label="Password in large text">
     <p class="summary" id="big_sum"></p>
     <div class="big-code" id="big_code"></div>
+    <div class="guide">
+      <div class="kb" id="kb" aria-hidden="true"></div>
+      <p id="guide_step" aria-live="polite"></p>
+      <div class="plate-row"><button id="prev" class="ghost" type="button">Back</button><button id="next" class="ghost" type="button">Next character</button></div>
+      <p class="hint">On the password screen the cursor starts on B, and each character you pick overwrites the next one and moves on. The cursor wraps around the edges. To skip a character that's already right, pick → on the bottom row.</p>
+    </div>
     <button id="big_close" type="button" autofocus>Done</button>
   </dialog>
 
@@ -291,7 +313,7 @@ body:has(#big[open]) { overflow: hidden; }
 </div>
 
 <script type="module">
-import { ALPHABET, encode, decode, money } from './rnrr.js';
+import { ALPHABET, FIELDS, encode, decode, money } from './rnrr.js';
 
 const range = n => [...Array(n).keys()].map(String);
 // name: [labels, number of values the game itself produces (the rest are glitch values)]
@@ -334,6 +356,7 @@ for (const box of form.querySelectorAll('[data-name]')) {
 }
 
 let state = { ...NEW_GAME };
+let base = null;  // the password as last loaded; characters that differ from it are underlined, so only those need retyping
 const isGlitch = s => Object.entries(OPTS).some(([k, [, n]]) => s[k] >= n) || [s.money2, s.money1, s.money0].some(d => d > 9);
 const label = (k, v) => OPTS[k][0][v];
 
@@ -349,11 +372,14 @@ function render() {
   for (const k of ['front', 'middle', 'rear']) $(k + '_out').textContent = state[k];
   put($('money'), Math.min(999, money(state) / 1000));
   $('money_out').textContent = '$' + money(state).toLocaleString('en-US');
-  const pw = encode(state);
-  $('code').innerHTML = pw.split(' ').map(g => `<span>${g}</span>`).join('');
-  $('big_code').innerHTML = $('code').innerHTML;
+  const pw = encode(state).replace(/ /g, '');
+  const changed = base ? [...pw].map((c, i) => c !== base[i]) : [];
+  $('code').innerHTML = $('big_code').innerHTML = [0, 4, 8].map(g =>
+    `<span>${[...pw.slice(g, g + 4)].map((c, k) => `<b data-i="${g + k}"${changed[g + k] ? ' class="chg"' : ''}>${c}</b>`).join('')}</span>`).join('');
   const sum = `${label('difficulty', state.difficulty)} · ${label('character', state.character)} · ${label('planet', state.planet)}, Division ${label('division', state.division)} · ${$('money_out').textContent} · ${label('car', state.car)}`;
-  $('summary').textContent = $('big_sum').textContent = sum;
+  const n = changed.filter(Boolean).length;
+  $('summary').textContent = $('big_sum').textContent = sum + (n ? ` · ${n} changed since loaded (underlined)` : '');
+  if ($('big').open) guide();
 }
 
 function setGlitch(on) {
@@ -398,8 +424,22 @@ const slide = e => {
 form.addEventListener('touchstart', slide, { passive: false });
 form.addEventListener('touchmove', slide, { passive: false });
 glitch.addEventListener('change', () => setGlitch(glitch.checked));
-$('reset').onclick = () => { state = { ...NEW_GAME }; render(); };
-$('max').onclick = () => { state = { ...MAX }; render(); };
+// Max everything, New game and loading a password can be undone for a few seconds
+let undoTimer;
+function undoable(what) {
+  const prev = [{ ...state }, base, glitch.checked], b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'ghost';
+  b.textContent = 'Undo';
+  b.title = 'Shortcut: Z';
+  b.setAttribute('aria-keyshortcuts', 'Z');
+  b.onclick = () => { [state, base] = prev; $('status').textContent = ''; setGlitch(prev[2]); };
+  $('status').replaceChildren(`${what}. `, b);
+  clearTimeout(undoTimer);
+  undoTimer = setTimeout(() => { $('status').textContent = ''; }, 8000);
+}
+$('reset').onclick = () => { undoable('New game'); state = { ...NEW_GAME }; base = null; render(); };
+$('max').onclick = () => { undoable('Maxed everything'); state = { ...MAX }; render(); };
 
 let copyTimer;
 $('copy').onclick = async () => {
@@ -408,7 +448,36 @@ $('copy').onclick = async () => {
   clearTimeout(copyTimer);
   copyTimer = setTimeout(() => { $('copy').textContent = 'Copy'; }, 1500);
 };
-$('big_open').onclick = () => $('big').showModal();
+// Typing guide: the password screen's grid (the same on Super Nintendo and Genesis) with the next character lit
+const GRID = ['BCDFGHJK', 'LMNPQRST', 'VWXYZ012', '3456789!', '←→    []'];  // bottom row: ← → … CLR END
+$('kb').innerHTML = GRID.map(r => [...r].map(c => `<span data-c="${c}"${'[]'.includes(c) ? ' class="small"' : ''}>${{ '[': 'CLR', ']': 'END', ' ': '' }[c] ?? c}</span>`).join('')).join('');
+const at = c => { const r = GRID.findIndex(row => row.includes(c)); return [r, GRID[r].indexOf(c)]; };
+// the cursor wraps both ways; up and down pass through the bottom row only where it has a key (columns 0, 1, 6 and 7)
+function moves(from, to) {
+  const [r0, c0] = at(from), [r1, c1] = at(to), wrap = (d, n) => (d % n + n) % n;
+  const right = wrap(c1 - c0, 8), down = wrap(r1 - r0, 5);
+  const h = right <= 4 ? ['→', right] : ['←', 8 - right];
+  const v = [0, 1, 6, 7].includes(c1) ? (down <= 2 ? ['↓', down] : ['↑', 5 - down]) : (r1 >= r0 ? ['↓', r1 - r0] : ['↑', r0 - r1]);
+  return [h, v].filter(([, n]) => n).map(([d, n]) => d + n).join(' ') || 'stay put';
+}
+let step = 0;
+function guide() {
+  const pw = encode(state).replace(/ /g, ''), from = step ? pw[step - 1] : 'B';
+  $('guide_step').textContent = step < 12
+    ? `Character ${step + 1} of 12: ${pw[step]} (${moves(from, pw[step])}, then press the button)`
+    : `Then END (${moves(pw[11], ']')}, then press the button)`;
+  for (const k of $('kb').children) k.classList.toggle('at', k.dataset.c === (step < 12 ? pw[step] : ']'));
+  $('big_code').querySelectorAll('b').forEach((g, k) => { g.classList.toggle('done', k < step); g.classList.toggle('cur', k === step); });
+  $('prev').disabled = step === 0;
+  $('next').disabled = step === 12;
+}
+$('prev').onclick = () => { step = Math.max(0, step - 1); guide(); };
+$('next').onclick = () => { step = Math.min(12, step + 1); guide(); };
+$('big').addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); $('next').click(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); $('prev').click(); }
+});
+$('big_open').onclick = () => { step = 0; guide(); $('big').showModal(); };
 $('big_close').onclick = () => $('big').close();
 
 // Fixes for a mistyped password: every valid password one character away, mixed-up lookalikes first
@@ -449,7 +518,9 @@ function load(text) {
     return;
   }
   err.textContent = '';
+  if (encode(state).replace(/ /g, '') !== s || base !== s) undoable('Loaded a password');
   state = f;
+  base = s;
   setGlitch(isGlitch(f) || glitch.checked);
 }
 $('load').onclick = () => load($('paste').value);
@@ -468,9 +539,39 @@ document.addEventListener('paste', e => {
 });
 document.addEventListener('keydown', e => {
   if (typing() || e.ctrlKey || e.metaKey || e.altKey) return;
-  const b = { c: $('copy'), b: $('big_open') }[e.key.toLowerCase()];
+  const b = { c: $('copy'), b: $('big_open'), z: $('status').querySelector('button') }[e.key.toLowerCase()];
   if (b) { e.preventDefault(); b.click(); }
 });
+
+// Which characters hold which setting: the fields fill bits 4-47 of the register in push order and the check value
+// bits 48-63; character i shows bits 63-5i down to 59-5i
+const NAMES = { front: 'Front weapon charges', rear: 'Rear weapon charges', middle: 'Nitro / jump jet charges', engine: 'Engine', tires: 'Tires',
+  shocks: 'Shocks', armor: 'Armor', car: 'Vehicle', color: 'Color', planet: 'Planet', division: 'Division', character: 'Character',
+  money0: 'Money', money1: 'Money', money2: 'Money', difficulty: 'Difficulty', check: 'the check value' };
+const CELLS = Array.from({ length: 12 }, () => new Set());
+{
+  let lo = 4;
+  const fill = (name, bits) => { for (let b = lo; b < lo + bits; b++) CELLS[Math.floor((63 - b) / 5)].add(name); lo += bits; };
+  for (const [name, bits] of FIELDS) fill(name, bits);
+  fill('check', 16);
+}
+function mark(names) {
+  for (const g of $('code').querySelectorAll('b')) g.classList.toggle('hl', !!names && names.some(n => CELLS[g.dataset.i].has(n)));
+}
+$('code').addEventListener('pointerover', e => {
+  const i = e.target.dataset?.i;
+  if (i === undefined) return;
+  mark([...CELLS[i]].filter(n => n !== 'check'));
+  $('symbol_info').textContent = `Character ${+i + 1} holds: ${[...new Set([...CELLS[i]].map(n => NAMES[n]))].join(', ')}`;
+});
+$('code').addEventListener('pointerleave', () => { mark(null); $('symbol_info').textContent = ''; });
+for (const type of ['pointerover', 'focusin']) form.addEventListener(type, e => {
+  const f = e.target.closest('.field');
+  const name = f?.querySelector('[data-name]')?.dataset.name ?? f?.querySelector('input[name]')?.name ?? (f?.querySelector('#money') ? 'money' : null);
+  mark(name ? (/^money/.test(name) ? ['money0', 'money1', 'money2'] : [name]) : null);
+});
+form.addEventListener('pointerleave', () => mark(null));
+form.addEventListener('focusout', () => mark(null));
 
 setGlitch(false);
 
