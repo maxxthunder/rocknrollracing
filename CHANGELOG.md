@@ -2,6 +2,12 @@
 
 Changes to the [password generator](https://maxxthunder.github.io/rocknrollracing/). The version is shown at the bottom of the page.
 
+## 1.5.1 (2026-10-30)
+- Big text has a typing guide: the game's password grid with the next character lit and the moves to reach it.
+- Undo for a few seconds after Max everything, New game or loading a password (Z on a computer).
+- After loading a password, the characters that change are underlined, so only those need retyping.
+- Point at a password character to see which settings it holds, or at a setting to light up its characters.
+
 ## 1.5.0 (2026-10-27)
 - A password decodes as soon as all 12 characters are typed or pasted.
 - Keyboard shortcuts on a computer: paste a password anywhere on the page to decode it, C copies, B opens Big text.

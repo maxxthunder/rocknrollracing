@@ -2,12 +2,13 @@
 
 # Rock N' Roll Racing — Password Generator & Secrets
 
-**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.5.0](https://img.shields.io/badge/version-1.5.0-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
+**[Open the password generator →](https://maxxthunder.github.io/rocknrollracing/)** &nbsp;[![v1.5.1](https://img.shields.io/badge/version-1.5.1-e8432c)](CHANGELOG.md) [![live site](https://img.shields.io/badge/live-github.io-ffcf3f)](https://maxxthunder.github.io/rocknrollracing/)
 
 ![The five cars from the SNES car shop, spinning](img/readme/cars.gif)
 
 - **Make a password** for any racer, planet, division, car, upgrades, weapons and money.
-- **Decode a password** you already have to see what it holds, and fix typos.
+- **Decode a password** you already have to see what it holds, and fix typos. After you change a setting, the characters that changed are underlined.
+- **Typing guide** in Big text: the game's password grid with the next character lit and the moves to reach it.
 - **Glitch mode** for values the game never makes itself.
 - Works on **Super Nintendo** and **Genesis**. Both use the same password algorithm, so a password from one works on the other. The US, European and Japanese releases all take the same passwords.
 
@@ -15,8 +16,8 @@ Everything here comes from disassembling the ROMs, and **every code below was ru
 
 ## How to use a password
 
-1. On the title screen, choose **PASSWORD**.
-2. Type the 12 characters. The game has no letter O or vowels; the generator's decoder fixes common mix-ups like 5/S and 0/Q.
+1. On the title screen, choose **PASSWORD**, then 1 or 2 players.
+2. Type the 12 characters. The cursor starts on B, and each character you pick overwrites the next one; → on the bottom row skips a character that's already right. The game has no letter O or vowels; the generator's decoder fixes common mix-ups like 5/S and 0/Q.
 3. Move to **END** and press the button.
 
 ## Secret codes
